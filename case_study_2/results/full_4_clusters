@@ -1,0 +1,26 @@
+digraph Tree {
+node [shape=box, style="filled, rounded", color="black", fontname="helvetica"] ;
+graph [ranksep=equally, splines=polyline] ;
+edge [fontname="helvetica"] ;
+0 [label=<coregistration/cost_function/normalised_cross_correlation &le; 0.5<br/>gini = 0.685<br/>samples = 100.0%<br/>value = [0.387, 0.367, 0.127, 0.119]>, fillcolor="#fefbf9"] ;
+1 [label=<signal_modeling/hrf/temporal_dispersion_derivs &le; 0.5<br/>gini = 0.5<br/>samples = 75.4%<br/>value = [0.513, 0.487, 0.0, 0.0]>, fillcolor="#fef8f5"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label=<signal_modeling/nuisance_regressors/motion &le; 21.0<br/>gini = 0.38<br/>samples = 52.0%<br/>value = [0.745, 0.255, 0.0, 0.0]>, fillcolor="#eeac7d"] ;
+1 -> 2 ;
+3 [label=<gini = 0.0<br/>samples = 38.7%<br/>value = [1.0, 0.0, 0.0, 0.0]>, fillcolor="#e58139"] ;
+2 -> 3 ;
+4 [label=<gini = 0.0<br/>samples = 13.3%<br/>value = [0.0, 1.0, 0.0, 0.0]>, fillcolor="#47e539"] ;
+2 -> 4 ;
+5 [label=<gini = 0.0<br/>samples = 23.4%<br/>value = [0.0, 1.0, 0.0, 0.0]>, fillcolor="#47e539"] ;
+1 -> 5 ;
+6 [label=<coregistration/source_target/anat_on_func &le; 0.5<br/>gini = 0.499<br/>samples = 24.6%<br/>value = [0.0, 0.0, 0.517, 0.483]>, fillcolor="#f2f8fd"] ;
+0 -> 6 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+7 [label=<gini = 0.0<br/>samples = 11.9%<br/>value = [0.0, 0.0, 0.0, 1.0]>, fillcolor="#d739e5"] ;
+6 -> 7 ;
+8 [label=<gini = 0.0<br/>samples = 12.7%<br/>value = [0.0, 0.0, 1.0, 0.0]>, fillcolor="#399de5"] ;
+6 -> 8 ;
+{rank=same ; 0} ;
+{rank=same ; 1; 6} ;
+{rank=same ; 2} ;
+{rank=same ; 3; 4; 5; 7; 8} ;
+}

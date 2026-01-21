@@ -1,0 +1,35 @@
+digraph Tree {
+node [shape=box, style="filled, rounded", color="black", fontname="helvetica"] ;
+graph [ranksep=equally, splines=polyline] ;
+edge [fontname="helvetica"] ;
+0 [label=<slice_timing_correction/ref_slice/first &le; 0.5<br/>gini = 0.696<br/>samples = 100.0%<br/>value = [0.375, 0.358, 0.138, 0.129]>, fillcolor="#fefcfa"] ;
+1 [label=<signal_modeling/hrf/temporal_dispersion_derivs &le; 0.5<br/>gini = 0.498<br/>samples = 70.4%<br/>value = [0.533, 0.467, 0.0, 0.0]>, fillcolor="#fcefe7"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label=<signal_modeling/nuisance_regressors/motion &le; 21.0<br/>gini = 0.394<br/>samples = 51.3%<br/>value = [0.73, 0.27, 0.0, 0.0]>, fillcolor="#efb082"] ;
+1 -> 2 ;
+3 [label=<gini = 0.0<br/>samples = 37.5%<br/>value = [1.0, 0.0, 0.0, 0.0]>, fillcolor="#e58139"] ;
+2 -> 3 ;
+4 [label=<gini = 0.0<br/>samples = 13.8%<br/>value = [0.0, 1.0, 0.0, 0.0]>, fillcolor="#47e539"] ;
+2 -> 4 ;
+5 [label=<gini = 0.0<br/>samples = 19.0%<br/>value = [0.0, 1.0, 0.0, 0.0]>, fillcolor="#47e539"] ;
+1 -> 5 ;
+6 [label=<signal_modeling/nuisance_regressors/motion &le; 21.0<br/>gini = 0.583<br/>samples = 29.6%<br/>value = [0.0, 0.097, 0.468, 0.435]>, fillcolor="#f4f9fe"] ;
+0 -> 6 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+7 [label=<signal_modeling/hrf/temporal_dispersion_derivs &le; 0.5<br/>gini = 0.514<br/>samples = 21.3%<br/>value = [0.0, 0.135, 0.649, 0.216]>, fillcolor="#92c9f1"] ;
+6 -> 7 ;
+8 [label=<gini = 0.0<br/>samples = 13.8%<br/>value = [0.0, 0.0, 1.0, 0.0]>, fillcolor="#399de5"] ;
+7 -> 8 ;
+9 [label=<signal_modeling/nuisance_regressors &le; 0.5<br/>gini = 0.473<br/>samples = 7.5%<br/>value = [0.0, 0.385, 0.0, 0.615]>, fillcolor="#f0b5f5"] ;
+7 -> 9 ;
+10 [label=<gini = 0.0<br/>samples = 2.9%<br/>value = [0.0, 1.0, 0.0, 0.0]>, fillcolor="#47e539"] ;
+9 -> 10 ;
+11 [label=<gini = 0.0<br/>samples = 4.6%<br/>value = [0.0, 0.0, 0.0, 1.0]>, fillcolor="#d739e5"] ;
+9 -> 11 ;
+12 [label=<gini = 0.0<br/>samples = 8.3%<br/>value = [0.0, 0.0, 0.0, 1.0]>, fillcolor="#d739e5"] ;
+6 -> 12 ;
+{rank=same ; 0} ;
+{rank=same ; 1; 6} ;
+{rank=same ; 2; 7} ;
+{rank=same ; 9} ;
+{rank=same ; 3; 4; 5; 8; 10; 11; 12} ;
+}

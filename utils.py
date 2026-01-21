@@ -171,7 +171,7 @@ def get_cluster_cophenetic(Z, distance_values):
 
 
 def get_cluster_silhouette(distance_values, cluster_labels):
-    if len(np.unique(cluster_labels)) < 2:
+    if (len(np.unique(cluster_labels)) < 2) or (len(np.unique(cluster_labels)) >= len(cluster_labels)):
         return None
     return silhouette_score(distance_values, cluster_labels, metric='precomputed')
 
