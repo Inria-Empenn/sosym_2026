@@ -1,0 +1,21 @@
+graph TD
+    %% Nodes
+    A("`**Spatial smoothing**<br/>FWHM<br/>[100.0%]`")
+    B("`**Spatial smoothing**<br/>FWHM<br/>[48.7%]`")
+    C("`**Signal modeling**<br/>HRF<br/>[51.3%]`")
+    D{{"Cluster 4<br/>[26.4%]"}}
+    E{{"Cluster 2<br/>[22.2%]"}}
+    F{{"Cluster 1<br/>[36.9%]"}}
+    G{{"Cluster 3<br/>[14.4%]"}}
+
+    %% Links
+    A -->|"≤ 7 mm"| B
+    A -->|"> 7 mm"| C
+    B -->|"≤ 3 mm"| D
+    B -->|"> 3 mm"| E
+    C -->|"Canonical<br/>1 derivatives"| F
+    C -->|"2 derivatives"| G
+
+    style A fill:#92C8C3
+    style B fill:#92C8C3
+    style C fill:#6a94ea
