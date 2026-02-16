@@ -1,0 +1,81 @@
+---
+config:
+  look: classic
+  theme: base
+---
+graph TD
+
+    subgraph Modeling
+        uvl@{ shape: tag-doc, label: "📃 UVL
+        Feature Model" }
+    end
+
+    subgraph Sampling
+        sample[
+        <table>
+        <tr><th>slice_timing_correction/<br>ref_slice/middle</th><th>signal_modeling/hrf/<br>temporal_dispersion_derivs</th><th>spatial_smoothing/<br>fwhm</th><th>...</tr>
+        <tr><td>True</td><td>True</td><td>0</td><td>...</td></tr>
+        <tr><td>False</td><td>False</td><td>2</td><td>...</td></tr>
+        <tr><td>False</td><td>True</td><td>6</td><td>...</td></tr>
+        <tr><td>True</td><td>False</td><td>12</td><td>...</td></tr>
+        <tr><td>...</td><td>...</td><td>...</td><td>...</td></tr>
+        </table>
+        ]
+    end
+
+    subgraph Running
+        workflows@{ shape: processes, label: "⚙️ NiPype workflows" }
+        maps@{ shape: processes, label: "🧠 Statistic maps" }
+    end
+
+    subgraph "Variant scoring"
+        pairwise("Pairwise correlations")
+        ref("Correlation to reference")
+        mean("Correlation to average")
+    end
+
+    subgraph Filtering
+        all-clusters@{ shape: processes, label: "Clusters" }
+        filtering@{ shape: flip-tri, label: "🔎 Filtering" }
+        valid-clusters@{ shape: processes, label: "✅ Valid clusters" }
+        invalid-clusters@{ shape: processes, label: "❌ Invalid clusters" }
+    end
+
+    subgraph Learning
+        regressor@{ shape: trap-t, label: "Regressor decision tree" }
+        classifier@{ shape: trap-t, label: "Classifier decision tree" }
+        results("`📊 Feature importance
+        ⛼ Graph
+        🎯 Accuracy
+        📉 Learning curve
+        `")
+    end
+
+    uvl -- "Uniform Random Sampling" --> sample
+
+    sample -- "Glue code" ---> workflows
+
+    workflows -- "🗲 Execution" --> maps
+
+    maps --> pairwise
+    maps --> mean
+    maps --> ref
+
+    mean --> regressor
+    ref --> regressor
+
+    pairwise -- "Hierarchical clustering" --> all-clusters
+
+    all-clusters --> filtering
+
+    filtering --> valid-clusters
+    filtering --> invalid-clusters
+
+    invalid-clusters --> classifier
+    valid-clusters --> classifier
+    valid-clusters --> regressor
+    classifier -- "Constraints inference" --> uvl
+
+    regressor --> results
+    classifier --> results
+    classifier --> results

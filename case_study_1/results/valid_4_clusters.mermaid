@@ -3,10 +3,15 @@ graph TD
     A("`**Spatial smoothing**<br/>FWHM<br/>[100.0%]`")
     B("`**Spatial smoothing**<br/>FWHM<br/>[48.7%]`")
     C("`**Signal modeling**<br/>HRF<br/>[51.3%]`")
-    D{{"Cluster 4<br/>[26.4%]"}}
-    E{{"Cluster 2<br/>[22.2%]"}}
-    F{{"Cluster 1<br/>[36.9%]"}}
-    G{{"Cluster 3<br/>[14.4%]"}}
+    D{{"Cluster 4<br>Corr. to ref. : 0.425<br>[26.4%]"}}
+    E{{"Cluster 1<br>Corr. to ref. : 1.0<br>[22.2%]"}}
+    F{{"Cluster 2<br>Corr. to ref. : 0.755<br>[36.9%]"}}
+    G{{"Cluster 3<br>Corr. to ref. : 0.533<br>[14.4%]"}}
+    H@{ img: "https://raw.githubusercontent.com/Inria-Empenn/sosym_2026/5642aff2950b7fd4863bbe14ca417460b8fd8286/case_study_1/results/medoid_valid_cluster_2.png", label: "", pos: "t", w: 250, constraint: "on" }
+    I@{ img: "https://raw.githubusercontent.com/Inria-Empenn/sosym_2026/5642aff2950b7fd4863bbe14ca417460b8fd8286/case_study_1/results/medoid_valid_cluster_1.png", label: "", pos: "t", w: 250, constraint: "on" }
+    J@{ img: "https://raw.githubusercontent.com/Inria-Empenn/sosym_2026/5642aff2950b7fd4863bbe14ca417460b8fd8286/case_study_1/results/medoid_valid_cluster_3.png", label: "", pos: "t", w: 250, constraint: "on" }
+    K@{ img: "https://raw.githubusercontent.com/Inria-Empenn/sosym_2026/5642aff2950b7fd4863bbe14ca417460b8fd8286/case_study_1/results/medoid_valid_cluster_4.png", label: "", pos: "t", w: 250, constraint: "on" }
+
 
     %% Links
     A -->|"≤ 7 mm"| B
@@ -15,6 +20,11 @@ graph TD
     B -->|"> 3 mm"| E
     C -->|"Canonical<br/>1 derivatives"| F
     C -->|"2 derivatives"| G
+
+    F -.- H
+    E -.- I
+    G -.- J
+    D -.- K
 
     style A fill:#92C8C3
     style B fill:#92C8C3

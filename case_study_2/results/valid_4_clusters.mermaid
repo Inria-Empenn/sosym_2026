@@ -8,10 +8,16 @@ graph TD
     J("`**Signal modeling**<br>Motion regressors<br>[7.5%]`")
 
     %% Cluster nodes
-    C1{{"Cluster 1<br>37.5%"}}
-    C2{{"Cluster 2<br>35.7%"}}
-    C3{{"Cluster 3<br>13.8%"}}
-    C4{{"Cluster 4<br>12.9%"}}
+    C1{{"Cluster 1<br>Corr. to ref. : 0.607<br>[37.5%]"}}
+    C2{{"Cluster 2<br>Corr. to ref. : 0.756<br>[35.7%]"}}
+    C3{{"Cluster 3<br>Corr. to ref. : 0.572<br>[13.8%]"}}
+    C4{{"Cluster 4<br>Corr. to ref. : 0.607<br>[12.9%]"}}
+
+    C1i@{ img: "https://raw.githubusercontent.com/Inria-Empenn/sosym_2026/ac4cd6bdc1077f4d6787479a0acac8db673807d8/case_study_2/results/medoid_valid_cluster_2.png", label: "", pos: "t", w: 250, constraint: "on" }
+    C2i@{ img: "https://raw.githubusercontent.com/Inria-Empenn/sosym_2026/ac4cd6bdc1077f4d6787479a0acac8db673807d8/case_study_2/results/medoid_valid_cluster_1.png", label: "", pos: "t", w: 250, constraint: "on" }
+    C3i@{ img: "https://raw.githubusercontent.com/Inria-Empenn/sosym_2026/ac4cd6bdc1077f4d6787479a0acac8db673807d8/case_study_2/results/medoid_valid_cluster_3.png", label: "", pos: "t", w: 250, constraint: "on" }
+    C4i@{ img: "https://raw.githubusercontent.com/Inria-Empenn/sosym_2026/ac4cd6bdc1077f4d6787479a0acac8db673807d8/case_study_2/results/medoid_valid_cluster_4.png", label: "", pos: "t", w: 250, constraint: "on" }
+
 
     %% Link nodes
     A -->|Middle| B
@@ -26,6 +32,11 @@ graph TD
     H -->|"2 derivatives"| C3
     J -->|0| C2
     J -->|"6 or 18"| C4
+
+    C1 -.- C1i
+    C2 -.- C2i
+    C3 -.- C3i
+    C4 -.- C4i
 
     style A fill:#12d791
     style B fill:#6a94ea

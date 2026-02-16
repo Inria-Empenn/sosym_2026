@@ -86,7 +86,7 @@ def predict_clusters(dataset, correlations, nb_clusters, corr_func, threshold=0.
 
     for i in range(iterations):
         results['iteration'] = 1
-        # Split into train and test sets
+        # Split into train and test.json sets
         X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=train_size, random_state=None)
 
         # Train the classifier
