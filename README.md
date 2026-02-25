@@ -7,9 +7,6 @@ Preprint available at https://inria.hal.science/hal-05525807.
    * [How to cite?](#how-to-cite)
    * [Contents overview](#contents-overview)
    * [Reproducing figures and tables](#reproducing-figures-and-tables)
-      * [Table 1](#table-1)
-      * [Fig. 1](#fig-1)
-      * [Fig. 2](#fig-2)
    * [Reproducing full analysis](#reproducing-full-analysis)
 
 ## How to cite?
