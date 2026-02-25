@@ -1,0 +1,306 @@
+features
+    "FSL_Analysis" {abstract}
+        optional
+            Cluster // Uses FSL cluster to perform clustering on statistical output
+                mandatory
+                     in_file // input volume
+                     threshold // threshold for input volume
+                optional
+                     out_index_file
+                     out_threshold_file
+                     out_localmax_txt_file
+                     out_localmax_vol_file
+                     out_size_file
+                     out_max_file
+                     out_mean_file
+                     out_pval_file
+                     pthreshold // p-threshold for clusters
+                     peak_distance // minimum distance between local maxima/minima, in mm (default 0)
+                     cope_file // cope volume
+                     volume // number of voxels in the mask
+                     dlh // smoothness estimate = sqrt(det(Lambda))
+                     fractional // interprets the threshold as a fraction of the robust range
+                     connectivity // the connectivity of voxels (default 26)
+                     use_mm // use mm, not voxel, coordinates
+                     find_min // find minima instead of maxima
+                     no_table // suppresses printing of the table info
+                     minclustersize // prints out minimum significant cluster size
+                     xfm_file // filename for Linear: input->standard-space transform. Non-linear: input->highres transform
+                     std_space_file // filename for standard-space volume
+                     num_maxima // no of local maxima to report
+                     warpfield_file // file containing warpfield
+                     output_type // FSL output type
+                        Alternative
+                            ['NIFTI', 'NIFTI_PAIR', 'NIFTI_GZ', 'NIFTI_PAIR_GZ', 'GIFTI']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            ContrastMgr // Use FSL contrast_mgr command to evaluate contrasts
+                mandatory
+                     tcon_file // contrast file containing T-contrasts
+                     param_estimates // Parameter estimates for each column of the design matrix
+                     corrections // statistical corrections used within FILM modelling
+                     dof_file // degrees of freedom
+                     sigmasquareds // summary of residuals, See Woolrich, et. al., 2001
+                optional
+                     fcon_file // contrast file containing F-contrasts
+                     contrast_num // contrast number to start labeling copes from
+                     suffix // suffix to put on the end of the cope filename before the contrast number, default is nothing
+                     output_type // FSL output type
+                        Alternative
+                            ['NIFTI', 'NIFTI_PAIR', 'NIFTI_GZ', 'NIFTI_PAIR_GZ', 'GIFTI']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            DualRegression // Wrapper Script for Dual Regression Workflow
+                mandatory
+                     in_files // List all subjects' preprocessed, standard-space 4D datasets
+                     group_IC_maps_4D // 4D image containing spatial IC maps (melodic_IC) from the whole-group ICA analysis
+                     n_perm // Number of permutations for randomise; set to 1 for just raw tstat output, set to 0 to not run randomise at all.
+                optional
+                     des_norm // Whether to variance-normalise the timecourses used as the stage-2 regressors; True is default and recommended
+                     one_sample_group_mean // perform 1-sample group-mean test instead of generic permutation test
+                     design_file // Design matrix for final cross-subject modelling with randomise
+                     con_file // Design contrasts for final cross-subject modelling with randomise
+                     out_dir // This directory will be created to hold all output and logfiles
+                     output_type // FSL output type
+                        Alternative
+                            ['NIFTI', 'NIFTI_PAIR', 'NIFTI_GZ', 'NIFTI_PAIR_GZ', 'GIFTI']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            FEAT // Uses FSL feat to calculate first level stats
+                mandatory
+                     fsf_file // File specifying the feat design spec file
+                optional
+                     output_type // FSL output type
+                        Alternative
+                            ['NIFTI', 'NIFTI_PAIR', 'NIFTI_GZ', 'NIFTI_PAIR_GZ', 'GIFTI']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            FEATModel // Uses FSL feat_model to generate design.mat files
+                mandatory
+                     fsf_file // File specifying the feat design spec file
+                     ev_files // Event spec files generated by level1design
+                optional
+                     output_type // FSL output type
+                        Alternative
+                            ['NIFTI', 'NIFTI_PAIR', 'NIFTI_GZ', 'NIFTI_PAIR_GZ', 'GIFTI']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            FEATRegister // Register feat directories to a specific standard
+                mandatory
+                     feat_dirs // Lower level feat dirs
+                     reg_image // image to register to (will be treated as standard)
+                optional
+                     reg_dof // registration degrees of freedom
+            FILMGLS // Use FSL film_gls command to fit a design matrix to voxel timeseries
+                mandatory
+                     in_file // input data file
+                optional
+                     design_file // design matrix file
+                     threshold // threshold
+                     smooth_autocorr // Smooth auto corr estimates
+                     mask_size // susan mask size
+                     brightness_threshold // susan brightness threshold, otherwise it is estimated
+                     full_data // output full data
+                     autocorr_estimate_only // perform autocorrelation estimatation only
+                     fit_armodel // fits autoregressive model - default is to use tukey with M=sqrt(numvols)
+                     tukey_window // tukey window size to estimate autocorr
+                     multitaper_product // multitapering with slepian tapers and num is the time-bandwidth product
+                     use_pava // estimates autocorr using PAVA
+                     autocorr_noestimate // do not estimate autocorrs
+                     output_pwdata // output prewhitened data and average design matrix
+                     results_dir // directory to store results in
+                     output_type // FSL output type
+                        Alternative
+                            ['NIFTI', 'NIFTI_PAIR', 'NIFTI_GZ', 'NIFTI_PAIR_GZ', 'GIFTI']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            FLAMEO // Use FSL flameo command to perform higher level model fits
+                mandatory
+                     cope_file // cope regressor data file
+                     mask_file // mask file
+                     design_file // design matrix file
+                     t_con_file // ascii matrix specifying t-contrasts
+                     cov_split_file // ascii matrix specifying the groups the covariance is split into
+                     run_mode // inference to perform
+                        Alternative
+                            ['fe', 'ols', 'flame1', 'flame12']
+                optional
+                     var_cope_file // varcope weightings data file
+                     dof_var_cope_file // dof data file for varcope data
+                     f_con_file // ascii matrix specifying f-contrasts
+                     n_jumps // number of jumps made by mcmc
+                     burnin // number of jumps at start of mcmc to be discarded
+                     sample_every // number of jumps for each sample
+                     fix_mean // fix mean for tfit
+                     infer_outliers // infer outliers - not for fe
+                     no_pe_outputs // do not output pe files
+                     sigma_dofs // sigma (in mm) to use for Gaussian smoothing the DOFs in FLAME 2. Default is 1mm, -1 indicates no smoothing
+                     outlier_iter // Number of max iterations to use when inferring outliers. Default is 12.
+                     log_dir
+                     output_type // FSL output type
+                        Alternative
+                            ['NIFTI', 'NIFTI_PAIR', 'NIFTI_GZ', 'NIFTI_PAIR_GZ', 'GIFTI']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            GLM
+                mandatory
+                     in_file // input file name (text matrix or 3D/4D image file)
+                     design // file name of the GLM design matrix (text time courses for temporal regression or an image file for spatial regression)
+                optional
+                     out_file // filename for GLM parameter estimates (GLM betas)
+                     contrasts // matrix of t-statics contrasts
+                     mask // mask image file name if input is image
+                     dof // set degrees of freedom explicitly
+                     des_norm // switch on normalization of the design matrix columns to unit std deviation
+                     dat_norm // switch on normalization of the data time series to unit std deviation
+                     var_norm // perform MELODIC variance-normalisation on data
+                     demean // switch on demeaining of design and data
+                     out_cope // output file name for COPE (either as txt or image
+                     out_z_name // output file name for Z-stats (either as txt or image
+                     out_t_name // output file name for t-stats (either as txt or image
+                     out_p_name // output file name for p-values of Z-stats (either as text file or image)
+                     out_f_name // output file name for F-value of full model fit
+                     out_pf_name // output file name for p-value for full model fit
+                     out_res_name // output file name for residuals
+                     out_varcb_name // output file name for variance of COPEs
+                     out_sigsq_name // output file name for residual noise variance sigma-square
+                     out_data_name // output file name for pre-processed data
+                     out_vnscales_name // output file name for scaling factors for variance normalisation
+                     output_type // FSL output type
+                        Alternative
+                            ['NIFTI', 'NIFTI_PAIR', 'NIFTI_GZ', 'NIFTI_PAIR_GZ', 'GIFTI']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            L2Model // Generate subject specific second level model
+                mandatory
+                     num_copes // number of copes to be combined
+            Level1Design // Generate FEAT specific files
+                mandatory
+                     interscan_interval // Interscan interval (in secs)
+                     session_info // Session specific information generated by ``modelgen.SpecifyModel``
+                     model_serial_correlations // Option to model serial correlations using an autoregressive estimator (order 1). Setting this option is only useful in the context of the fsf file. If you set this to False, you need to repeat this option for FILMGLS by setting autocorr_noestimate to True
+                optional
+                     bases
+                     orthogonalization // which regressors to make orthogonal e.g., {1: {0:0,1:0,2:0}, 2: {0:1,1:1,2:0}} to make the second regressor in a 2-regressor model orthogonal to the first.
+                     contrasts // List of contrasts with each contrast being a list of the form - [('name', 'stat', [condition list], [weight list], [session list])]. if session list is None or not provided, all sessions are used. For F contrasts, the condition list should contain previously defined T-contrasts.
+            MELODIC // Multivariate Exploratory Linear Optimised Decomposition into Independent
+                mandatory
+                     in_files // input file names (either single file name or a list)
+                optional
+                     out_dir // output directory name
+                     mask // file name of mask for thresholding
+                     no_mask // switch off masking
+                     update_mask // switch off mask updating
+                     no_bet // switch off BET
+                     bg_threshold // brain/non-brain threshold used to mask non-brain voxels, as a percentage (only if --nobet selected)
+                     dim // dimensionality reduction into #num dimensions (default: automatic estimation)
+                     dim_est // use specific dim. estimation technique: lap, bic, mdl, aic, mean (default: lap)
+                     sep_whiten // switch on separate whitening
+                     sep_vn // switch off joined variance normalization
+                     migp // switch on MIGP data reduction
+                     migpN // number of internal Eigenmaps
+                     migp_shuffle // randomise MIGP file order (default: TRUE)
+                     migp_factor // Internal Factor of mem-threshold relative to number of Eigenmaps (default: 2)
+                     num_ICs // number of IC's to extract (for deflation approach)
+                     approach // approach for decomposition, 2D: defl, symm (default), 3D: tica (default), concat
+                     non_linearity // nonlinearity: gauss, tanh, pow3, pow4
+                     var_norm // switch off variance normalization
+                     pbsc // switch off conversion to percent BOLD signal change
+                     cov_weight // voxel-wise weights for the covariance matrix (e.g. segmentation information)
+                     epsilon // minimum error change
+                     epsilonS // minimum error change for rank-1 approximation in TICA
+                     maxit // maximum number of iterations before restart
+                     max_restart // maximum number of restarts
+                     mm_thresh // threshold for Mixture Model based inference
+                     no_mm // switch off mixture modelling on IC maps
+                     ICs // filename of the IC components file for mixture modelling
+                     mix // mixing matrix for mixture modelling / filtering
+                     smode // matrix of session modes for report generation
+                     rem_cmp // component numbers to remove
+                     report // generate Melodic web report
+                     bg_image // specify background image for report (default: mean image)
+                     tr_sec // TR in seconds
+                     log_power // calculate log of power for frequency spectrum
+                     t_des // design matrix across time-domain
+                     t_con // t-contrast matrix across time-domain
+                     s_des // design matrix across subject-domain
+                     s_con // t-contrast matrix across subject-domain
+                     out_all // output everything
+                     out_unmix // output unmixing matrix
+                     out_stats // output thresholded maps and probability maps
+                     out_pca // output PCA results
+                     out_white // output whitening/dewhitening matrices
+                     out_orig // output the original ICs
+                     out_mean // output mean volume
+                     report_maps // control string for spatial map images (see slicer)
+                     remove_deriv // removes every second entry in paradigm file (EV derivatives)
+                     output_type // FSL output type
+                        Alternative
+                            ['NIFTI', 'NIFTI_PAIR', 'NIFTI_GZ', 'NIFTI_PAIR_GZ', 'GIFTI']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            MultipleRegressDesign // Generate multiple regression design
+                mandatory
+                     contrasts // List of contrasts with each contrast being a list of the form - [('name', 'stat', [condition list], [weight list])]. if session list is None or not provided, all sessions are used. For F contrasts, the condition list should contain previously defined T-contrasts without any weight list.
+                     regressors // dictionary containing named lists of regressors
+                optional
+                     groups // list of group identifiers (defaults to single group)
+            Randomise // FSL Randomise: feeds the 4D projected FA data into GLM
+                mandatory
+                     in_file // 4D input file
+                optional
+                     base_name // the rootname that all generated files will have
+                     design_mat // design matrix file
+                     tcon // t contrasts file
+                     fcon // f contrasts file
+                     mask // mask image
+                     x_block_labels // exchangeability block labels file
+                     demean // demean data temporally before model fitting
+                     one_sample_group_mean // perform 1-sample group-mean test instead of generic permutation test
+                     show_total_perms // print out how many unique permutations would be generated and exit
+                     show_info_parallel_mode // print out information required for parallel mode and exit
+                     vox_p_values // output voxelwise (corrected and uncorrected) p-value images
+                     tfce // carry out Threshold-Free Cluster Enhancement
+                     tfce2D // carry out Threshold-Free Cluster Enhancement with 2D optimisation
+                     f_only // calculate f-statistics only
+                     raw_stats_imgs // output raw ( unpermuted ) statistic images
+                     p_vec_n_dist_files // output permutation vector and null distribution text files
+                     num_perm // number of permutations (default 5000, set to 0 for exhaustive)
+                     seed // specific integer seed for random number generator
+                     var_smooth // use variance smoothing (std is in mm)
+                     c_thresh // carry out cluster-based thresholding
+                     cm_thresh // carry out cluster-mass-based thresholding
+                     f_c_thresh // carry out f cluster thresholding
+                     f_cm_thresh // carry out f cluster-mass thresholding
+                     tfce_H // TFCE height parameter (default=2)
+                     tfce_E // TFCE extent parameter (default=0.5)
+                     tfce_C // TFCE connectivity (6 or 26; default=6)
+                     output_type // FSL output type
+                        Alternative
+                            ['NIFTI', 'NIFTI_PAIR', 'NIFTI_GZ', 'NIFTI_PAIR_GZ', 'GIFTI']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            SMM
+                mandatory
+                     spatial_data_file // statistics spatial map
+                     mask // mask file
+                optional
+                     no_deactivation_class // enforces no deactivation class
+                     output_type // FSL output type
+                        Alternative
+                            ['NIFTI', 'NIFTI_PAIR', 'NIFTI_GZ', 'NIFTI_PAIR_GZ', 'GIFTI']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            SmoothEstimate // Estimates the smoothness of an image
+                mandatory
+                     dof // number of degrees of freedom
+                     mask_file // brain mask volume
+                optional
+                     residual_fit_file // residual-fit image file
+                     zstat_file // zstat image file
+                     output_type // FSL output type
+                        Alternative
+                            ['NIFTI', 'NIFTI_PAIR', 'NIFTI_GZ', 'NIFTI_PAIR_GZ', 'GIFTI']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+constraints

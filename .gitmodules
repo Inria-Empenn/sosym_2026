@@ -1,0 +1,15 @@
+[submodule "src/case_study_1/fmri-conf-runner"]
+	path = src/case_study_1/fmri-conf-runner
+	url = https://github.com/Inria-Empenn/fmri-conf-runner.git
+[submodule "src/case_study_1/src/case_study_2/fmri-conf-runner"]
+	path = src/case_study_1/src/case_study_2/fmri-conf-runner
+	url = https://github.com/Inria-Empenn/fmri-conf-runner.git
+[submodule "src/case_study_2/fmri-conf-runner"]
+	path = src/case_study_2/fmri-conf-runner
+	url = https://github.com/Inria-Empenn/fmri-conf-runner.git
+[submodule "src/src/case_study_2/fmri_feature_model"]
+	path = src/src/case_study_2/fmri_feature_model
+	url = https://github.com/Inria-Empenn/fmri_feature_model.git
+[submodule "src/src/case_study_1/fmri_feature_model"]
+	path = src/src/case_study_1/fmri_feature_model
+	url = https://github.com/Inria-Empenn/fmri_feature_model.git

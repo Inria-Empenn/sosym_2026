@@ -1,0 +1,21 @@
+digraph Tree {
+node [shape=box, style="filled, rounded", color="black", fontname="helvetica"] ;
+graph [ranksep=equally, splines=polyline] ;
+edge [fontname="helvetica"] ;
+0 [label=<spatial_smoothing/fwhm &le; 3.0<br/>gini = 0.61<br/>samples = 100.0%<br/>value = [0.563, 0.191, 0.177, 0.069]>, fillcolor="#f3c5a4"] ;
+1 [label=<coregistration/cost_function/normalised_cross_correlation &le; 0.5<br/>gini = 0.388<br/>samples = 26.0%<br/>value = [0.0, 0.736, 0.0, 0.264]>, fillcolor="#89ee80"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label=<gini = 0.0<br/>samples = 19.1%<br/>value = [0.0, 1.0, 0.0, 0.0]>, fillcolor="#47e539"] ;
+1 -> 2 ;
+3 [label=<gini = 0.0<br/>samples = 6.9%<br/>value = [0.0, 0.0, 0.0, 1.0]>, fillcolor="#d739e5"] ;
+1 -> 3 ;
+4 [label=<coregistration/cost_function/normalised_cross_correlation &le; 0.5<br/>gini = 0.364<br/>samples = 74.0%<br/>value = [0.761, 0.0, 0.239, 0.0]>, fillcolor="#eda977"] ;
+0 -> 4 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+5 [label=<gini = 0.0<br/>samples = 56.3%<br/>value = [1.0, 0.0, 0.0, 0.0]>, fillcolor="#e58139"] ;
+4 -> 5 ;
+6 [label=<gini = 0.0<br/>samples = 17.7%<br/>value = [0.0, 0.0, 1.0, 0.0]>, fillcolor="#399de5"] ;
+4 -> 6 ;
+{rank=same ; 0} ;
+{rank=same ; 1; 4} ;
+{rank=same ; 2; 3; 5; 6} ;
+}

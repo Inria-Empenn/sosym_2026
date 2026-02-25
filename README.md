@@ -1,12 +1,28 @@
 # In the Search for Truth: Refining and Exploring Variability in Neuroimaging Pipelines
 Youenn Merel Jourdan, Hege Spieker, Camille Maumet, Mathieu Acher
 
-## Repository structure
+Preprint available at https://inria.hal.science/hal-05525807.
+
+## Table of contents
+   * [How to cite?](#how-to-cite)
+   * [Contents overview](#contents-overview)
+   * [Reproducing figures and tables](#reproducing-figures-and-tables)
+      * [Table 1](#table-1)
+      * [Fig. 1](#fig-1)
+      * [Fig. 2](#fig-2)
+   * [Reproducing full analysis](#reproducing-full-analysis)
+
+## How to cite?
+
+See [CITATION](CITATION).
+
+# Contents overview
+
+For `data`, `doc`, `figures`, `results`, `src` :
 - `case_study_1` contains the data, results and code related to case study 1
 - `case_study_2` contains the data, results and code related to case study 2
-- `cross_case_study` contains the data, results and code related to cross case study analysis
 
-### Code
+## src
 Notebooks used for data post-processing analysis are stored in each directory
 - `normalize.ipynb` is for data normalization
 - `auditory_filtering.ipynb` is for filtering of valid / invalid configs (RQ2)
@@ -14,12 +30,15 @@ Notebooks used for data post-processing analysis are stored in each directory
 - `classifier_analysis.ipynb` is for classifier decision tree learning (RQ4)
 - `cost.ipynb` is for computational cost (RQ5)
 
-### Data
+## data
 
 Task-fMRI dataset is available in data/auditory. It was downloaded from https://www.fil.ion.ucl.ac.uk/spm/data/auditory/
 
 For the `data` directory in each `case_study_[1,2]` directory :
-- `model/full_` is the UVL model used for sampling
+- `model/full_pipeline.uvl` is the UVL model used for sampling
+- `configs` contains the sampled configs
+  - produced by sampling command (see _Sample_ section below)
+  - used by config runner (see _Pipelines execution & postprocessing_ section below)
 - `regression` contains test and training subset with correlation to precompiled average images
   - used by `regression_analysis.ipynb`
 - `dataset.csv` is the sample of 1000 configuration (+ 1 reference) with correlation to average image and to reference
@@ -29,85 +48,66 @@ For the `data` directory in each `case_study_[1,2]` directory :
 - `invalid_dataset.csv` and `valid_dataset.csv` is the sample of 1000 configuration classified as valid or invalid
     - produced by `auditory_filtering.ipynb`
 
-### Results
-The `results` directory in each `case_study_[1,2]` contains intermediate results and figures.
+## results
+The `results` directory contains intermediate results and figures.
 
-# Sampling
+## Reproducing figures and tables
 
-The code used for this part is available at https://github.com/Inria-Empenn/fmri_feature_model
+### Table 1
 
-## Pull & install project
-``` shell
-git clone https://github.com/Inria-Empenn/fmri_feature_model.git
-cd fmri_feature_model
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
+### Fig. 3 (Pairwise correlations matrices)
+
+### Fig. 4 (Distributions of correlations)
+
+### Fig. 5 (Regression decision tree learning curves)
+
+### Table 2 (Feature importances)
+
+### Table 3 (Feature importances) 
+
+### Fig. 6 (Decision tree)
+
+### Table 4 (Feature importance)
+
+### Table 5 (Feature importance)
+
+### Fig. 7 (Decision tree)
+
+### Fig. 8 (F1 score, clusters, features by clustering threshold)
+
+### Fig. 9 (Feature importance)
+
+## Reproducing full analysis
+
+### fMRI data
+
+fMRI data used in this experiment can be downloaded at https://www.fil.ion.ucl.ac.uk/spm/data/auditory/
 ```
+Raw functional and structural data (BIDS & NIfTI formats): ZIP archive: MoAEpilot.bids.zip (29Mb)
+``` 
 
-## Sample
-Randomly sample 1000 configurations divided into 20 files (+ reference configuration)
-``` sh
-python sample.py --nconfig 1000 --parts 20
-```
+### Sampling configuration
 
-# Pipelines execution & postprocessing
+Configurations sampled used in this experiment are in the `data/case_study_*/configs` folders of this repository.
 
-The code used for this part is available at https://github.com/Inria-Empenn/fmri-conf-runner
+To generate your own sample, see `README.md` of the https://github.com/Inria-Empenn/fmri_feature_model repository, also linked as submodule in the `src/case_study_*/fmri_feature_model` of this repository.
+Use `splc_2025` tag for case study 1 and `sosym_2026` for case study 2.
 
-## Pull & install project
-``` shell
-git clone https://github.com/Inria-Empenn/fmri-conf-runner.git
-cd fmri-conf-runner
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-```
+### Running configuration
 
-## Build docker image
-``` shell
-docker build . -t fmri-conf-runner
-```
-Final `fmri-conf-runner` image size is approximately 6.5 GB
+To run sampled configurations on fMRI data, see `README.md` of the https://github.com/Inria-Empenn/fmri-conf-runner repository, also linked as submodule in the `src/case_study_*/fmri_feature_model` of this repository.
+Use `splc25` tag for case study 1 and `sosym_2026` for case study 2.
 
-Alternatively, you can directly pull latest image from GitHub : `docker pull ghcr.io/inria-empenn/fmri-confs-runner:latest`
+### Post-processing
 
-## Pipelines execution
+To run post-processing on pipelines results, see `README.md` of the https://github.com/Inria-Empenn/fmri-conf-runner repository, also linked as submodule in the `src/case_study_*/fmri_feature_model` of this repository.
+Use `splc25` tag for case study 1 and `sosym_2026` for case study 2.
 
-Change `/local/path/to/...` to your local paths
+### Analysis
 
-- `/local/path/to/data` : Will be mapped to `/data` in the container. This folder must contains
-   - the `auditory` dataset/subfolder
-   - `data_desc.json` file
-- `/local/path/to/results` : This folder must exists. Will be mapped to `/results` in the container.
-- `/local/path/to/workdir` : This folder must exists. Will be mapped to `/workdir` in the container.
-- `/local/path/to/configs` : This folder must contains configuration CSV files (in this example `config.csv` and `config_ref.csv`). Will be mapped to `/configs` in the container.
-
-``` sh
-docker run -u root -v "/local/path/to/data:/data" -v "/local/path/to/results:/results" -v "/local/path/to/workdir:/work" -v "/local/path/to/configs:/configs" fmri-conf-runner python -u run.py --configs "/configs/config.csv" --data /data/data_desc.json --ref /configs/config_ref.csv
-```
-
-On Abaca (Inria cluster), use `run_configs.sh`
-```sh
-oarsub -S -n fmri-conf-runner ./run_configs.sh
-```
-
-## Postprocessing
-
-Change `/local/path/to/...` to your local paths
-
-- `/local/path/to/results` : This folder must contains the outputs of the pipeline execution step. Will be mapped to `/results` in the container.
-
-``` sh
-docker run -u root -v "/local/path/to/results:/results" fmri-conf-runner python -u postprocess.py --results "/results"
-```
-
-On Abaca (Inria cluster), use `postprocess.sh`
-```sh
-oarsub -S -n postprocess ./postprocess.sh
-```
-
-
-
-
-
+Notebooks used for data post-processing analysis are stored in each directory
+- `normalize.ipynb` is for data normalization
+- `auditory_filtering.ipynb` is for filtering of valid / invalid configs (RQ2)
+- `regression_analysis.ipynb` is for regression decision tree learning (RQ3)
+- `classifier_analysis.ipynb` is for classifier decision tree learning (RQ4)
+- `cost.ipynb` is for computational cost (RQ5)
