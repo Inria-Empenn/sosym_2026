@@ -53,29 +53,50 @@ The `results` directory contains intermediate results and figures.
 
 ## Reproducing figures and tables
 
-### Table 1
-
 ### Fig. 3 (Pairwise correlations matrices)
+
+Execute (run all cells) `src/correlations_analysis.ipynb` notebook, then see `Pairwise correlations matrix for both case studies` cell output
 
 ### Fig. 4 (Distributions of correlations)
 
+Execute (run all cells) `src/correlations_analysis.ipynb` notebook, then see `Distributions of correlations` cell output 
+
 ### Fig. 5 (Regression decision tree learning curves)
+
+Execute (run all cells) `src/regression_analysis.ipynb` notebook, then see `Regression decision tree learning curves` cell output 
 
 ### Table 2 (Feature importances)
 
-### Table 3 (Feature importances) 
+Latex code for table can be generated with cell `Feature importances latex table code generator` of notebook `src/classifier_analysis.ipynb`
+Set `case = 1` and `dataset = 'full'`
+
+### Table 3 (Feature importances)
+
+Latex code for table can be generated with cell `Feature importances latex table code generator` of notebook `src/classifier_analysis.ipynb`
+Set `case = 1` and `dataset = 'valid'`
 
 ### Fig. 6 (Decision tree)
 
+
 ### Table 4 (Feature importance)
 
+Latex code for table can be generated with cell `Feature importances latex table code generator` of notebook `src/classifier_analysis.ipynb`
+Set `case = 2` and `dataset = 'full'`
+
 ### Table 5 (Feature importance)
+
+Latex code for table can be generated with cell `Feature importances latex table code generator` of notebook `src/classifier_analysis.ipynb`
+Set `case = 2` and `dataset = 'valid'`
 
 ### Fig. 7 (Decision tree)
 
 ### Fig. 8 (F1 score, clusters, features by clustering threshold)
 
+Execute (run all cells) `src/classifier_analysis.ipynb` notebook, then see `F1-score, clusters, features by clustering threshold` cell output
+
 ### Fig. 9 (Feature importance)
+
+Execute (run all cells) `src/classifier_analysis.ipynb` notebook, then see `Feature importance (valid configurations)` cell output
 
 ## Reproducing full analysis
 
