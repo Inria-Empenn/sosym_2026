@@ -46,7 +46,10 @@ For the `data` directory in each `case_study_[1,2]` directory :
     - produced by `auditory_filtering.ipynb`
 
 ## results
-The `results` directory contains intermediate results and figures.
+The `results` directory contains intermediate results.
+
+## figures
+The `figures` directory contains figures.
 
 ## Reproducing figures and tables
 
