@@ -62,30 +62,37 @@ Execute (run all cells) `src/correlations_analysis.ipynb` notebook, then see `Di
 
 Execute (run all cells) `src/regression_analysis.ipynb` notebook, then see `Regression decision tree learning curves` cell output 
 
-### Table 2 (Feature importances)
+### Table 2 (Feature importances, full case study 1)
 
 Latex code for table can be generated with cell `Feature importances latex table code generator` of notebook `src/classifier_analysis.ipynb`
 Set `case = 1` and `dataset = 'full'`
 
-### Table 3 (Feature importances)
+### Table 3 (Feature importances, valid case study 1)
 
 Latex code for table can be generated with cell `Feature importances latex table code generator` of notebook `src/classifier_analysis.ipynb`
 Set `case = 1` and `dataset = 'valid'`
 
-### Fig. 6 (Decision tree)
+### Fig. 6 (Decision tree, valid case study 1)
 
+Execute (run all cells) `src/case_study_1/classifier_analysis.ipynb` notebook, then see `[Valid] Classifier decision tree results`
+Training of model can take some time.
+`valid_4_clusters` graph (as svg and dot) is written in `figures/case_study_1` folder.
 
-### Table 4 (Feature importance)
+### Table 4 (Feature importance, full case study 2)
 
 Latex code for table can be generated with cell `Feature importances latex table code generator` of notebook `src/classifier_analysis.ipynb`
 Set `case = 2` and `dataset = 'full'`
 
-### Table 5 (Feature importance)
+### Table 5 (Feature importance, valid case study 1)
 
 Latex code for table can be generated with cell `Feature importances latex table code generator` of notebook `src/classifier_analysis.ipynb`
 Set `case = 2` and `dataset = 'valid'`
 
-### Fig. 7 (Decision tree)
+### Fig. 7 (Decision tree, valid case study 2)
+
+Execute (run all cells) `src/case_study_2/classifier_analysis.ipynb` notebook, then see `[Valid] Classifier decision tree results`
+Training of model can take some time.
+`valid_4_clusters` graph (as svg and dot) is written in `figures/case_study_2` folder.
 
 ### Fig. 8 (F1 score, clusters, features by clustering threshold)
 
@@ -113,10 +120,16 @@ Use `splc_2025` tag for case study 1 and `sosym_2026` for case study 2.
 
 ### Running configuration
 
+Due to storage space constraints, the statistic maps (pipelines outputs) used in this experiment cannot be directly shared.
+
 To run sampled configurations on fMRI data, see `README.md` of the https://github.com/Inria-Empenn/fmri-conf-runner repository, also linked as submodule in the `src/case_study_*/fmri_feature_model` of this repository.
 Use `splc25` tag for case study 1 and `sosym_2026` for case study 2.
 
 ### Post-processing
+
+Post-processing data used in this experiment are in the `data/case_study_*/` folders of this repository :
+- pairwise correlations `correlations.csv`, zipped
+- configurations with correlations to proxy ground truths `dataset.csv`
 
 To run post-processing on pipelines results, see `README.md` of the https://github.com/Inria-Empenn/fmri-conf-runner repository, also linked as submodule in the `src/case_study_*/fmri_feature_model` of this repository.
 Use `splc25` tag for case study 1 and `sosym_2026` for case study 2.
