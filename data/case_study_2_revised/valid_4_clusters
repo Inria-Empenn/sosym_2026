@@ -1,0 +1,26 @@
+digraph Tree {
+node [shape=box, style="filled, rounded", color="black", fontname="helvetica"] ;
+graph [ranksep=equally, splines=polyline] ;
+edge [fontname="helvetica"] ;
+0 [label=<signal_modeling/nuisance_regressors/motion &le; 3.0<br/>gini = 0.718<br/>samples = 100.0%<br/>value = [0.303, 0.34, 0.253, 0.104]>, fillcolor="#f5fef4"] ;
+1 [label=<gini = 0.0<br/>samples = 25.3%<br/>value = [0.0, 0.0, 1.0, 0.0]>, fillcolor="#399de5"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label=<signal_modeling/temporal_noise_autocorrelation/AR1 &le; 0.5<br/>gini = 0.609<br/>samples = 74.7%<br/>value = [0.405, 0.456, 0.0, 0.139]>, fillcolor="#effdee"] ;
+0 -> 2 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+3 [label=<coregistration/cost_function/normalised_cross_correlation &le; 0.5<br/>gini = 0.216<br/>samples = 38.8%<br/>value = [0.0, 0.877, 0.0, 0.123]>, fillcolor="#61e955"] ;
+2 -> 3 ;
+4 [label=<gini = 0.0<br/>samples = 34.0%<br/>value = [0.0, 1.0, 0.0, 0.0]>, fillcolor="#47e539"] ;
+3 -> 4 ;
+5 [label=<gini = 0.0<br/>samples = 4.8%<br/>value = [0.0, 0.0, 0.0, 1.0]>, fillcolor="#d739e5"] ;
+3 -> 5 ;
+6 [label=<coregistration/cost_function/normalised_cross_correlation &le; 0.5<br/>gini = 0.263<br/>samples = 35.9%<br/>value = [0.844, 0.0, 0.0, 0.156]>, fillcolor="#ea985e"] ;
+2 -> 6 ;
+7 [label=<gini = 0.0<br/>samples = 30.3%<br/>value = [1.0, 0.0, 0.0, 0.0]>, fillcolor="#e58139"] ;
+6 -> 7 ;
+8 [label=<gini = 0.0<br/>samples = 5.6%<br/>value = [0.0, 0.0, 0.0, 1.0]>, fillcolor="#d739e5"] ;
+6 -> 8 ;
+{rank=same ; 0} ;
+{rank=same ; 2} ;
+{rank=same ; 3; 6} ;
+{rank=same ; 1; 4; 5; 7; 8} ;
+}

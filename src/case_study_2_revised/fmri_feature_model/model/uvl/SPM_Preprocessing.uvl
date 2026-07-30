@@ -1,0 +1,309 @@
+features
+    "SPM_Preprocessing" {abstract}
+        optional
+            ApplyDeformations
+                mandatory
+                     in_files
+                     deformation_field
+                     reference_volume
+                optional
+                     interp // degree of b-spline used for interpolation
+            ApplyVDM // Use the fieldmap toolbox from spm to apply the voxel displacement map (VDM) to some epi files.
+                mandatory
+                     in_files // list of filenames to apply the vdm to
+                     vdmfile // Voxel displacement map to use
+                optional
+                     distortion_direction // phase encode direction input data have been acquired with
+                     write_which // If the first value is non-zero, reslice all images. If the second value is non-zero, reslice a mean image.
+                     interpolation // degree of b-spline used for interpolation
+                     write_wrap // Check if interpolation should wrap in [x,y,z]
+                     write_mask // True/False mask time series images
+                     out_prefix // fieldmap corrected output prefix
+            Coregister // Use spm_coreg for estimating cross-modality rigid body alignment
+                mandatory
+                     target // reference file to register to
+                     source // file to register to target
+                optional
+                     jobtype // one of: estimate, write, estwrite
+                        Alternative
+                            ['estwrite', 'estimate', 'write']
+                     apply_to_files // files to apply transformation to
+                     cost_function // cost function, one of: 'mi' - Mutual Information, 'nmi' - Normalised Mutual Information, 'ecc' - Entropy Correlation Coefficient, 'ncc' - Normalised Cross Correlation
+                        Alternative
+                            ['mi', 'nmi', 'ecc', 'ncc']
+                     fwhm // gaussian smoothing kernel width (mm)
+                     separation // sampling separation in mm
+                     tolerance // acceptable tolerance for each of 12 params
+                     write_interp // degree of b-spline used for interpolation
+                     write_wrap // Check if interpolation should wrap in [x,y,z]
+                     write_mask // True/False mask output image
+                     out_prefix // coregistered output prefix
+            CreateWarped // Apply a flow field estimated by DARTEL to create warped images
+                mandatory
+                     image_files // A list of files to be warped
+                     flowfield_files // DARTEL flow fields u_rc1*
+                optional
+                     iterations // The number of iterations: log2(number of time steps)
+                     interp // degree of b-spline used for interpolation
+                     modulate // Modulate images
+            DARTEL // Use spm DARTEL to create a template and flow fields
+                mandatory
+                     image_files // A list of files to be segmented
+                optional
+                     template_prefix // Prefix for template
+                     regularization_form // Form of regularization energy term
+                        Alternative
+                            ['Linear', 'Membrane', 'Bending']
+                     iteration_parameters // List of tuples for each iteration * Inner iterations * Regularization parameters * Time points for deformation model * smoothing parameter
+                     optimization_parameters // Optimization settings a tuple: * LM regularization * cycles of multigrid solver * relaxation iterations
+            DARTELNorm2MNI // Use spm DARTEL to normalize data to MNI space
+                mandatory
+                     template_file // DARTEL template
+                     flowfield_files // DARTEL flow fields u_rc1*
+                     apply_to_files // Files to apply the transform to
+                optional
+                     voxel_size // Voxel sizes for output file
+                     bounding_box // Voxel sizes for output file
+                     modulate // Modulate out images - no modulation preserves concentrations
+                     fwhm
+            FieldMap // Use the fieldmap toolbox from spm to calculate the voxel displacement map (VDM).
+                mandatory
+                     phase_file // presubstracted phase file
+                     magnitude_file // presubstracted magnitude file
+                     echo_times // short and long echo times
+                     blip_direction // polarity of the phase-encode blips
+                        Alternative
+                            [1, -1]
+                     total_readout_time // total EPI readout time
+                     epi_file // EPI to unwarp
+                optional
+                     jobtype // Must be 'calculatevdm'; to apply VDM, use the ApplyVDM interface.
+                        Alternative
+                            ['calculatevdm']
+                     maskbrain // masking or no masking of the brain
+                     epifm // epi-based field map
+                     jacobian_modulation // jacobian modulation
+                     method // One of: Mark3D, Mark2D, Huttonish
+                        Alternative
+                            ['Mark3D', 'Mark2D', 'Huttonish']
+                     unwarp_fwhm // gaussian smoothing kernel width
+                     pad // padding kernel width
+                     ws // weighted smoothing
+                     template // template image for brain masking
+                     mask_fwhm // gaussian smoothing kernel width
+                     nerode // number of erosions
+                     ndilate // number of erosions
+                     thresh // threshold used to create brain mask from segmented data
+                     reg // regularization value used in the segmentation
+                     matchvdm // match VDM to EPI
+                     sessname // VDM filename extension
+                     writeunwarped // write unwarped EPI
+                     anat_file // anatomical image for comparison
+                     matchanat // match anatomical image to EPI
+            MultiChannelNewSegment // Use spm_preproc8 (New Segment) to separate structural images into
+                optional
+                     channels // A list of tuples (one per each channel) with the following fields: - a list of channel files (only 1rst channel files will be segmented) - a tuple with the following channel-specific info fields: - bias reguralisation (0-10) - FWHM of Gaussian smoothness of bias - which maps to save (Field, Corrected) - a tuple of two boolean values
+                     tissues // A list of tuples (one per tissue) with the following fields: - tissue probability map (4D), 1-based index to frame - number of gaussians - which maps to save [Native, DARTEL] - a tuple of two boolean values - which maps to save [Unmodulated, Modulated] - a tuple of two boolean values
+                     affine_regularization // mni, eastern, subj, none
+                        Alternative
+                            ['mni', 'eastern', 'subj', 'none']
+                     warping_regularization
+                     sampling_distance // Sampling distance on data for parameter estimation
+                     write_deformation_fields // Which deformation fields to write:[Inverse, Forward]
+            NewSegment // Use spm_preproc8 (New Segment) to separate structural images into
+                mandatory
+                     channel_files // A list of files to be segmented
+                optional
+                     channel_info // A tuple with the following fields: - bias reguralisation (0-10) - FWHM of Gaussian smoothness of bias - which maps to save (Field, Corrected) - a tuple of two boolean values
+                     tissues // A list of tuples (one per tissue) with the following fields: - tissue probability map (4D), 1-based index to frame - number of gaussians - which maps to save [Native, DARTEL] - a tuple of two boolean values - which maps to save [Unmodulated, Modulated] - a tuple of two boolean values
+                     affine_regularization // mni, eastern, subj, none
+                        Alternative
+                            ['mni', 'eastern', 'subj', 'none']
+                     warping_regularization
+                     sampling_distance // Sampling distance on data for parameter estimation
+                     write_deformation_fields // Which deformation fields to write:[Inverse, Forward]
+            Normalize // use spm_normalise for warping an image to a template
+                mandatory
+                     template // template file to normalize to
+                     source // file to normalize to template
+                     parameter_file // normalization parameter file*_sn.mat
+                optional
+                     jobtype // Estimate, Write or do both
+                        Alternative
+                            ['estwrite', 'est', 'write']
+                     apply_to_files // files to apply transformation to
+                     source_weight // name of weighting image for source
+                     template_weight // name of weighting image for template
+                     source_image_smoothing // source smoothing
+                     template_image_smoothing // template smoothing
+                     affine_regularization_type // mni, size, none
+                        Alternative
+                            ['mni', 'size', 'none']
+                     DCT_period_cutoff // Cutoff of for DCT bases
+                     nonlinear_iterations // Number of iterations of nonlinear warping
+                     nonlinear_regularization // the amount of the regularization for the nonlinear part of the normalization
+                     write_preserve // True/False warped images are modulated
+                     write_bounding_box // 3x2-element list of lists
+                     write_voxel_sizes // 3-element list
+                     write_interp // degree of b-spline used for interpolation
+                     write_wrap // Check if interpolation should wrap in [x,y,z] - list of bools
+                     out_prefix // normalized output prefix
+            Normalize12 // uses SPM12's new Normalise routine for warping an image to a template.
+                mandatory
+                     image_to_align // file to estimate normalization parameters with
+                     deformation_file // file y_*.nii containing 3 deformation fields for the deformation in x, y and z dimension
+                optional
+                     apply_to_files // files to apply transformation to
+                     jobtype // Estimate, Write or do Both
+                        Alternative
+                            ['estwrite', 'est', 'write']
+                     bias_regularization // no(0) - extremely heavy (10)
+                        Alternative
+                            [0, 1e-05, 0.0001, 0.001, 0.01, 0.1, 1, 10]
+                     bias_fwhm // FWHM of Gaussian smoothness of bias
+                        Alternative
+                            [30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 'Inf']
+                     tpm // template in form of tissue probablitiy maps to normalize to
+                     affine_regularization_type // mni, size, none
+                        Alternative
+                            ['mni', 'size', 'none']
+                     warping_regularization // controls balance between parameters and data
+                     smoothness // value (in mm) to smooth the data before normalization
+                     sampling_distance // Sampling distance on data for parameter estimation
+                     write_bounding_box // 3x2-element list of lists representing the bounding box (in mm) to be written
+                     write_voxel_sizes // 3-element list representing the voxel sizes (in mm) of the written normalised images
+                     write_interp // degree of b-spline used for interpolation
+                     out_prefix // Normalized output prefix
+            Realign // Use spm_realign for estimating within modality rigid body alignment
+                mandatory
+                     in_files // list of filenames to realign
+                optional
+                     jobtype // one of: estimate, write, estwrite
+                        Alternative
+                            ['estwrite', 'estimate', 'write']
+                     quality // 0.1 = fast, 1.0 = precise
+                     fwhm // gaussian smoothing kernel width
+                     separation // sampling separation in mm
+                     register_to_mean // Indicate whether realignment is done to the mean image
+                     weight_img // filename of weighting image
+                     interp // degree of b-spline used for interpolation
+                     wrap // Check if interpolation should wrap in [x,y,z]
+                     write_which // determines which images to reslice
+                     write_interp // degree of b-spline used for interpolation
+                     write_wrap // Check if interpolation should wrap in [x,y,z]
+                     write_mask // True/False mask output image
+                     out_prefix // realigned output prefix
+            RealignUnwarp // Use spm_uw_estimate for estimating within subject registration and unwarping
+                mandatory
+                     in_files // list of filenames to realign and unwarp
+                optional
+                     phase_map // Voxel displacement map to use in unwarping. Unlike SPM standard behaviour, the same map will be used for all sessions
+                     quality // 0.1 = fast, 1.0 = precise
+                     fwhm // gaussian smoothing kernel width
+                     separation // sampling separation in mm
+                     register_to_mean // Indicate whether realignment is done to the mean image
+                     weight_img // filename of weighting image
+                     interp // degree of b-spline used for interpolation
+                     wrap // Check if interpolation should wrap in [x,y,z]
+                     est_basis_func // Number of basis functions to use for each dimension
+                     est_reg_order // This parameter determines how to balance the compromise between likelihood maximization and smoothness maximization of the estimated field.
+                     est_reg_factor // Regularisation factor. Default: 100000 (medium).
+                     est_jacobian_deformations // Jacobian deformations. In theory a good idea to include them, in practice a bad idea. Default: No.
+                     est_first_order_effects // First order effects should only depend on pitch and roll, i.e. [4 5]
+                     est_second_order_effects // List of second order terms to model second derivatives of.
+                     est_unwarp_fwhm // gaussian smoothing kernel width for unwarp
+                     est_re_est_mov_par // Re-estimate movement parameters at each unwarping iteration.
+                     est_num_of_iterations // Number of iterations.
+                     est_taylor_expansion_point // Point in position space to perform Taylor-expansion around.
+                     reslice_which // determines which images to reslice
+                     reslice_interp // degree of b-spline used for interpolation
+                     reslice_wrap // Check if interpolation should wrap in [x,y,z]
+                     reslice_mask // True/False mask output image
+                     out_prefix // realigned and unwarped output prefix
+            Segment // use spm_segment to separate structural images into different
+                mandatory
+                     data // one scan per subject
+                optional
+                     gm_output_type // Options to produce grey matter images: c1*.img, wc1*.img and mwc1*.img. None: [False,False,False], Native Space: [False,False,True], Unmodulated Normalised: [False,True,False], Modulated Normalised: [True,False,False], Native + Unmodulated Normalised: [False,True,True], Native + Modulated Normalised: [True,False,True], Native + Modulated + Unmodulated: [True,True,True], Modulated + Unmodulated Normalised: [True,True,False]
+                     wm_output_type // Options to produce white matter images: c2*.img, wc2*.img and mwc2*.img. None: [False,False,False], Native Space: [False,False,True], Unmodulated Normalised: [False,True,False], Modulated Normalised: [True,False,False], Native + Unmodulated Normalised: [False,True,True], Native + Modulated Normalised: [True,False,True], Native + Modulated + Unmodulated: [True,True,True], Modulated + Unmodulated Normalised: [True,True,False]
+                     csf_output_type // Options to produce CSF images: c3*.img, wc3*.img and mwc3*.img. None: [False,False,False], Native Space: [False,False,True], Unmodulated Normalised: [False,True,False], Modulated Normalised: [True,False,False], Native + Unmodulated Normalised: [False,True,True], Native + Modulated Normalised: [True,False,True], Native + Modulated + Unmodulated: [True,True,True], Modulated + Unmodulated Normalised: [True,True,False]
+                     save_bias_corrected // True/False produce a bias corrected image
+                     clean_masks // clean using estimated brain mask ('no','light','thorough')
+                        Alternative
+                            ['no', 'light', 'thorough']
+                     tissue_prob_maps // list of gray, white & csf prob. (opt,)
+                     gaussians_per_class // num Gaussians capture intensity distribution
+                     affine_regularization // Possible options: "mni", "eastern", "subj", "none" (no reguralisation), "" (no affine registration)
+                        Alternative
+                            ['mni', 'eastern', 'subj', 'none', '']
+                     warping_regularization // Controls balance between parameters and data
+                     warp_frequency_cutoff // Cutoff of DCT bases
+                     bias_regularization // no(0) - extremely heavy (10)
+                        Alternative
+                            [0, 1e-05, 0.0001, 0.001, 0.01, 0.1, 1, 10]
+                     bias_fwhm // FWHM of Gaussian smoothness of bias
+                        Alternative
+                            [30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 'Inf']
+                     sampling_distance // Sampling distance on data for parameter estimation
+                     mask_image // Binary image to restrict parameter estimation
+            SliceTiming // Use spm to perform slice timing correction.
+                mandatory
+                     in_files // list of filenames to apply slice timing
+                     num_slices // number of slices in a volume
+                     time_repetition // time between volume acquisitions (start to start time)
+                     time_acquisition // time of volume acquisition. usually calculated as TR-(TR/num_slices)
+                     slice_order // 1-based order or onset (in ms) in which slices are acquired
+                optional
+                     ref_slice
+                     out_prefix // slicetimed output prefix
+            Smooth // Use spm_smooth for 3D Gaussian smoothing of image volumes.
+                mandatory
+                     in_files // list of files to smooth
+                optional
+                     fwhm
+                     data_type // Data type of the output images
+                     implicit_masking // A mask implied by a particular voxel value
+                     out_prefix // smoothed output prefix
+            VBMSegment // Use VBM8 toolbox to separate structural images into different
+                mandatory
+                     in_files // A list of files to be segmented
+                optional
+                     tissues // tissue probability map
+                     gaussians_per_class // number of gaussians for each tissue class
+                     bias_regularization // no(0) - extremely heavy (10)
+                        Alternative
+                            [0, 1e-05, 0.0001, 0.001, 0.01, 0.1, 1, 10]
+                     bias_fwhm // FWHM of Gaussian smoothness of bias
+                        Alternative
+                            [30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 'Inf']
+                     sampling_distance // Sampling distance on data for parameter estimation
+                     warping_regularization // Controls balance between parameters and data
+                     spatial_normalization
+                        Alternative
+                            ['high', 'low']
+                     dartel_template
+                     use_sanlm_denoising_filter // 0=No denoising, 1=denoising,2=denoising multi-threaded
+                     mrf_weighting
+                     cleanup_partitions // 0=None,1=light,2=thorough
+                     display_results
+                     gm_native
+                     gm_normalized
+                     gm_modulated_normalized // 0=none,1=affine+non-linear(SPM8 default),2=non-linear only
+                     gm_dartel // 0=None,1=rigid(SPM8 default),2=affine
+                     wm_native
+                     wm_normalized
+                     wm_modulated_normalized // 0=none,1=affine+non-linear(SPM8 default),2=non-linear only
+                     wm_dartel // 0=None,1=rigid(SPM8 default),2=affine
+                     csf_native
+                     csf_normalized
+                     csf_modulated_normalized // 0=none,1=affine+non-linear(SPM8 default),2=non-linear only
+                     csf_dartel // 0=None,1=rigid(SPM8 default),2=affine
+                     bias_corrected_native
+                     bias_corrected_normalized
+                     bias_corrected_affine
+                     pve_label_native
+                     pve_label_normalized
+                     pve_label_dartel // 0=None,1=rigid(SPM8 default),2=affine
+                     jacobian_determinant
+                     deformation_field // forward and inverse field
+constraints

@@ -1,0 +1,15 @@
+{
+  "data_path" : "/data",
+  "input" : {
+    "anat" : "sub-{subject_id}/anat/sub-{subject_id}_run-01_T1w.nii.gz",
+    "func" : "sub-{subject_id}/func/sub-{subject_id}_task-MOTOR_acq-lr_bold.nii.gz",
+    "events" : "sub-{subject_id}/func/sub-{subject_id}_task-MOTOR_acq-lr_event.tsv"
+  },
+  "result_path" : "/results",
+  "work_path" : "/work",
+  "task" : "motor",
+  "subjects" : ["100206", "100307"],
+  "slices_nb" : 72,
+  "tr" : 0.72,
+  "units" : "secs"
+}

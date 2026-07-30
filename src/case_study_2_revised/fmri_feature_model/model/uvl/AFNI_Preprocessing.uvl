@@ -1,0 +1,806 @@
+features
+    "AFNI_Preprocessing" {abstract}
+        optional
+            AlignEpiAnatPy // Align EPI to anatomical datasets or vice versa.
+                mandatory
+                     in_file // EPI dataset to align
+                     anat // name of structural dataset
+                optional
+                     epi_base
+                     anat2epi // align anatomical to EPI dataset (default)
+                     epi2anat // align EPI to anatomical dataset
+                     save_skullstrip // save skull-stripped (not aligned)
+                     suffix // append suffix to the original anat/epi dataset to usein the resulting dataset names (default is "_al")
+                     epi_strip // method to mask brain in EPI datashould be one of[3dSkullStrip]/3dAutomask/None)
+                        Alternative
+                            ['3dSkullStrip', '3dAutomask', 'None']
+                     volreg // do volume registration on EPI dataset before alignmentshould be 'on' or 'off', defaults to 'on'
+                        Alternative
+                            ['on', 'off']
+                     tshift // do time shifting of EPI dataset before alignmentshould be 'on' or 'off', defaults to 'on'
+                        Alternative
+                            ['on', 'off']
+                     outputtype // AFNI output filetype
+                        Alternative
+                            ['NIFTI', 'AFNI', 'NIFTI_GZ']
+                     py27_path
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            Allineate // Program to align one dataset (the 'source') to a base dataset
+                mandatory
+                     in_file // input file to 3dAllineate
+                optional
+                     reference // file to be used as reference, the first volume will be used if not given the reference will be the first volume of in_file.
+                     out_file // output file from 3dAllineate
+                     out_param_file // Save the warp parameters in ASCII (.1D) format.
+                     in_param_file // Read warp parameters from file and apply them to the source dataset, and produce a new dataset
+                     out_matrix // Save the transformation matrix for each volume.
+                     in_matrix // matrix to align input file
+                     overwrite // overwrite output file if it already exists
+                     allcostx // Compute and print ALL available cost functionals for the un-warped inputsAND THEN QUIT. If you use this option none of the other expected outputs will be produced
+                     cost // Defines the 'cost' function that defines the matching between the source and the base
+                        Alternative
+                            ['leastsq', 'ls', 'mutualinfo', 'mi', 'corratio_mul', 'crM', 'norm_mutualinfo', 'nmi', 'hellinger', 'hel', 'corratio_add', 'crA', 'corratio_uns', 'crU']
+                     interpolation // Defines interpolation method to use during matching
+                        Alternative
+                            ['nearestneighbour', 'linear', 'cubic', 'quintic']
+                     final_interpolation // Defines interpolation method used to create the output dataset
+                        Alternative
+                            ['nearestneighbour', 'linear', 'cubic', 'quintic', 'wsinc5']
+                     nmatch // Use at most n scattered points to match the datasets.
+                     no_pad // Do not use zero-padding on the base image.
+                     zclip // Replace negative values in the input datasets (source & base) with zero.
+                     convergence // Convergence test in millimeters (default 0.05mm).
+                     usetemp // temporary file use
+                     check // After cost functional optimization is done, start at the final parameters and RE-optimize using this new cost functions. If the results are too different, a warning message will be printed. However, the final parameters from the original optimization will be used to create the output dataset.
+                     one_pass // Use only the refining pass -- do not try a coarse resolution pass first. Useful if you know that only small amounts of image alignment are needed.
+                     two_pass // Use a two pass alignment strategy for all volumes, searching for a large rotation+shift and then refining the alignment.
+                     two_blur // Set the blurring radius for the first pass in mm.
+                     two_first // Use -twopass on the first image to be registered, and then on all subsequent images from the source dataset, use results from the first image's coarse pass to start the fine pass.
+                     two_best // In the coarse pass, use the best 'bb' set of initialpoints to search for the starting point for the finepass. If bb==0, then no search is made for the beststarting point, and the identity transformation isused as the starting point. [Default=5; min=0 max=11]
+                     fine_blur // Set the blurring radius to use in the fine resolution pass to 'x' mm. A small amount (1-2 mm?) of blurring at the fine step may help with convergence, if there is some problem, especially if the base volume is very noisy. [Default == 0 mm = no blurring at the final alignment pass]
+                     center_of_mass // Use the center-of-mass calculation to bracket the shifts.
+                     autoweight // Compute a weight function using the 3dAutomask algorithm plus some blurring of the base image.
+                     automask // Compute a mask function, set a value for dilation or 0.
+                     autobox // Expand the -automask function to enclose a rectangular box that holds the irregular mask.
+                     nomask // Don't compute the autoweight/mask; if -weight is not also used, then every voxel will be counted equally.
+                     weight_file // Set the weighting for each voxel in the base dataset; larger weights mean that voxel count more in the cost function. Must be defined on the same grid as the base dataset
+                     weight
+                     out_weight_file // Write the weight volume to disk as a dataset
+                     source_mask // mask the input dataset
+                     source_automask // Automatically mask the source dataset with dilation or 0.
+                     warp_type // Set the warp type.
+                        Alternative
+                            ['shift_only', 'shift_rotate', 'shift_rotate_scale', 'affine_general']
+                     warpfreeze // Freeze the non-rigid body parameters after first volume.
+                     replacebase // If the source has more than one volume, then after the first volume is aligned to the base.
+                     replacemeth // After first volume is aligned, switch method for later volumes. For use with '-replacebase'.
+                        Alternative
+                            ['leastsq', 'ls', 'mutualinfo', 'mi', 'corratio_mul', 'crM', 'norm_mutualinfo', 'nmi', 'hellinger', 'hel', 'corratio_add', 'crA', 'corratio_uns', 'crU']
+                     epi // Treat the source dataset as being composed of warped EPI slices, and the base as comprising anatomically 'true' images. Only phase-encoding direction image shearing and scaling will be allowed with this option.
+                     maxrot // Maximum allowed rotation in degrees.
+                     maxshf // Maximum allowed shift in mm.
+                     maxscl // Maximum allowed scaling factor.
+                     maxshr // Maximum allowed shearing factor.
+                     master // Write the output dataset on the same grid as this file.
+                     newgrid // Write the output dataset using isotropic grid spacing in mm.
+                     nwarp // Experimental nonlinear warping: bilinear or legendre poly.
+                        Alternative
+                            ['bilinear', 'cubic', 'quintic', 'heptic', 'nonic', 'poly3', 'poly5', 'poly7', 'poly9']
+                     nwarp_fixmot // To fix motion along directions.
+                     nwarp_fixdep // To fix non-linear warp dependency along directions.
+                     verbose // Print out verbose progress reports.
+                     quiet // Don't print out verbose progress reports.
+                     num_threads // set number of threads
+                     outputtype // AFNI output filetype
+                        Alternative
+                            ['NIFTI', 'AFNI', 'NIFTI_GZ']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            AutoTLRC // A minimal wrapper for the AutoTLRC script
+                mandatory
+                     in_file // Original anatomical volume (+orig).The skull is removed by this scriptunless instructed otherwise (-no_ss).
+                     base // Reference anatomical volume. Usually this volume is in some standard space like TLRC or MNI space and with afni dataset view of (+tlrc). Preferably, this reference volume should have had the skull removed but that is not mandatory. AFNI's distribution contains several templates. For a longer list, use "whereami -show_templates" TT_N27+tlrc --> Single subject, skull stripped volume. This volume is also known as N27_SurfVol_NoSkull+tlrc elsewhere in AFNI and SUMA land. (www.loni.ucla.edu, www.bic.mni.mcgill.ca) This template has a full set of FreeSurfer (surfer.nmr.mgh.harvard.edu) surface models that can be used in SUMA. For details, see Talairach-related link: https://afni.nimh.nih.gov/afni/suma TT_icbm452+tlrc --> Average volume of 452 normal brains. Skull Stripped. (www.loni.ucla.edu) TT_avg152T1+tlrc --> Average volume of 152 normal brains. Skull Stripped.(www.bic.mni.mcgill.ca) TT_EPI+tlrc --> EPI template from spm2, masked as TT_avg152T1 TT_avg152 and TT_EPI volume sources are from SPM's distribution. (www.fil.ion.ucl.ac.uk/spm/) If you do not specify a path for the template, the script will attempt to locate the template AFNI's binaries directory. NOTE: These datasets have been slightly modified from their original size to match the standard TLRC dimensions (Jean Talairach and Pierre Tournoux Co-Planar Stereotaxic Atlas of the Human Brain Thieme Medical Publishers, New York, 1988). That was done for internal consistency in AFNI. You may use the original form of these volumes if you choose but your TLRC coordinates will not be consistent with AFNI's TLRC database (San Antonio Talairach Daemon database), for example.
+                optional
+                     outputtype // AFNI output filetype
+                        Alternative
+                            ['NIFTI', 'AFNI', 'NIFTI_GZ']
+                     no_ss // Do not strip skull of input data set (because skull has already been removed or because template still has the skull) NOTE: The ``-no_ss`` option is not all that optional. Here is a table of when you should and should not use ``-no_ss`` +------------------+------------+---------------+ | Dataset | Template | +==================+============+===============+ | | w/ skull | wo/ skull | +------------------+------------+---------------+ | WITH skull | ``-no_ss`` | xxx | +------------------+------------+---------------+ | WITHOUT skull | No Cigar | ``-no_ss`` | +------------------+------------+---------------+ Template means: Your template of choice Dset. means: Your anatomical dataset ``-no_ss`` means: Skull stripping should not be attempted on Dset xxx means: Don't put anything, the script will strip Dset No Cigar means: Don't try that combination, it makes no sense.
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            AutoTcorrelate // Computes the correlation coefficient between the time series of each
+                mandatory
+                     in_file // timeseries x space (volume or surface) file
+                optional
+                     polort // Remove polynomial trend of order m or -1 for no detrending
+                     eta2 // eta^2 similarity
+                     mask // mask of voxels
+                     mask_only_targets // use mask only on targets voxels
+                     mask_source // mask for source voxels
+                     out_file // output image file name
+                     num_threads // set number of threads
+                     outputtype // AFNI output filetype
+                        Alternative
+                            ['NIFTI', 'AFNI', 'NIFTI_GZ']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            Automask // Create a brain-only mask of the image using AFNI 3dAutomask command
+                mandatory
+                     in_file // input file to 3dAutomask
+                optional
+                     out_file // output image file name
+                     brain_file // output file from 3dAutomask
+                     clfrac // sets the clip level fraction (must be 0.1-0.9). A small value will tend to make the mask larger [default = 0.5].
+                     dilate // dilate the mask outwards
+                     erode // erode the mask inwards
+                     num_threads // set number of threads
+                     outputtype // AFNI output filetype
+                        Alternative
+                            ['NIFTI', 'AFNI', 'NIFTI_GZ']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            Bandpass // Program to lowpass and/or highpass each voxel time series in a
+                mandatory
+                     in_file // input file to 3dBandpass
+                     lowpass // lowpass
+                     highpass // highpass
+                optional
+                     out_file // output file from 3dBandpass
+                     mask // mask file
+                     despike // Despike each time series before other processing. Hopefully, you don't actually need to do this, which is why it is optional.
+                     orthogonalize_file // Also orthogonalize input to columns in f.1D. Multiple '-ort' options are allowed.
+                     orthogonalize_dset // Orthogonalize each voxel to the corresponding voxel time series in dataset 'fset', which must have the same spatial and temporal grid structure as the main input dataset. At present, only one '-dsort' option is allowed.
+                     no_detrend // Skip the quadratic detrending of the input that occurs before the FFT-based bandpassing. You would only want to do this if the dataset had been detrended already in some other program.
+                     tr // Set time step (TR) in sec [default=from dataset header].
+                     nfft // Set the FFT length [must be a legal value].
+                     normalize // Make all output time series have L2 norm = 1 (i.e., sum of squares = 1).
+                     automask // Create a mask from the input dataset.
+                     blur // Blur (inside the mask only) with a filter width (FWHM) of 'fff' millimeters.
+                     localPV // Replace each vector by the local Principal Vector (AKA first singular vector) from a neighborhood of radius 'rrr' millimeters. Note that the PV time series is L2 normalized. This option is mostly for Bob Cox to have fun with.
+                     notrans // Don't check for initial positive transients in the data. The test is a little slow, so skipping it is OK, if you KNOW the data time series are transient-free.
+                     num_threads // set number of threads
+                     outputtype // AFNI output filetype
+                        Alternative
+                            ['NIFTI', 'AFNI', 'NIFTI_GZ']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            BlurInMask // Blurs a dataset spatially inside a mask. That's all. Experimental.
+                mandatory
+                     in_file // input file to 3dSkullStrip
+                     fwhm // fwhm kernel size
+                optional
+                     out_file // output to the file
+                     mask // Mask dataset, if desired. Blurring will occur only within the mask. Voxels NOT in the mask will be set to zero in the output.
+                     multimask // Multi-mask dataset -- each distinct nonzero value in dataset will be treated as a separate mask for blurring purposes.
+                     automask // Create an automask from the input dataset.
+                     preserve // Normally, voxels not in the mask will be set to zero in the output. If you want the original values in the dataset to be preserved in the output, use this option.
+                     float_out // Save dataset as floats, no matter what the input data type is.
+                     options // options
+                     num_threads // set number of threads
+                     outputtype // AFNI output filetype
+                        Alternative
+                            ['NIFTI', 'AFNI', 'NIFTI_GZ']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            BlurToFWHM // Blurs a 'master' dataset until it reaches a specified FWHM smoothness
+                mandatory
+                     in_file // The dataset that will be smoothed
+                optional
+                     automask // Create an automask from the input dataset.
+                     fwhm // Blur until the 3D FWHM reaches this value (in mm)
+                     fwhmxy // Blur until the 2D (x,y)-plane FWHM reaches this value (in mm)
+                     blurmaster // The dataset whose smoothness controls the process.
+                     mask // Mask dataset, if desired. Voxels NOT in mask will be set to zero in output.
+                     num_threads // set number of threads
+                     outputtype // AFNI output filetype
+                        Alternative
+                            ['NIFTI', 'AFNI', 'NIFTI_GZ']
+                     out_file // output image file name
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            ClipLevel // Estimates the value at which to clip the anatomical dataset so
+                mandatory
+                     in_file // input file to 3dClipLevel
+                optional
+                     mfrac // Use the number ff instead of 0.50 in the algorithm
+                     doall // Apply the algorithm to each sub-brick separately.
+                     grad // Also compute a 'gradual' clip level as a function of voxel position, and output that to a dataset.
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            DegreeCentrality // Performs degree centrality on a dataset using a given maskfile
+                mandatory
+                     in_file // input file to 3dDegreeCentrality
+                optional
+                     sparsity // only take the top percent of connections
+                     oned_file // output filepath to text dump of correlation matrix
+                     mask // mask file to mask input data
+                     thresh // threshold to exclude connections where corr <= thresh
+                     polort
+                     autoclip // Clip off low-intensity regions in the dataset
+                     automask // Mask the dataset to target brain-only voxels
+                     num_threads // set number of threads
+                     outputtype // AFNI output filetype
+                        Alternative
+                            ['NIFTI', 'AFNI', 'NIFTI_GZ']
+                     out_file // output image file name
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            Despike // Removes 'spikes' from the 3D+time input dataset
+                mandatory
+                     in_file // input file to 3dDespike
+                optional
+                     out_file // output image file name
+                     num_threads // set number of threads
+                     outputtype // AFNI output filetype
+                        Alternative
+                            ['NIFTI', 'AFNI', 'NIFTI_GZ']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            Detrend // This program removes components from voxel time series using
+                mandatory
+                     in_file // input file to 3dDetrend
+                optional
+                     out_file // output image file name
+                     num_threads // set number of threads
+                     outputtype // AFNI output filetype
+                        Alternative
+                            ['NIFTI', 'AFNI', 'NIFTI_GZ']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            ECM // Performs degree centrality on a dataset using a given maskfile
+                mandatory
+                     in_file // input file to 3dECM
+                optional
+                     sparsity // only take the top percent of connections
+                     full // Full power method; enables thresholding; automatically selected if -thresh or -sparsity are set
+                     fecm // Fast centrality method; substantial speed increase but cannot accommodate thresholding; automatically selected if -thresh or -sparsity are not set
+                     shift // shift correlation coefficients in similarity matrix to enforce non-negativity, s >= 0.0; default = 0.0 for -full, 1.0 for -fecm
+                     scale // scale correlation coefficients in similarity matrix to after shifting, x >= 0.0; default = 1.0 for -full, 0.5 for -fecm
+                     eps // sets the stopping criterion for the power iteration; :math:`l2\|v_\text{old} - v_\text{new}\| < eps\|v_\text{old}\|`; default = 0.001
+                     max_iter // sets the maximum number of iterations to use in the power iteration; default = 1000
+                     memory // Limit memory consumption on system by setting the amount of GB to limit the algorithm to; default = 2GB
+                     mask // mask file to mask input data
+                     thresh // threshold to exclude connections where corr <= thresh
+                     polort
+                     autoclip // Clip off low-intensity regions in the dataset
+                     automask // Mask the dataset to target brain-only voxels
+                     num_threads // set number of threads
+                     outputtype // AFNI output filetype
+                        Alternative
+                            ['NIFTI', 'AFNI', 'NIFTI_GZ']
+                     out_file // output image file name
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            Fim // Program to calculate the cross-correlation of an ideal reference
+                mandatory
+                     in_file // input file to 3dfim+
+                     ideal_file // ideal time series file name
+                optional
+                     out_file // output image file name
+                     fim_thr // fim internal mask threshold value
+                     out // Flag to output the specified parameter
+                     num_threads // set number of threads
+                     outputtype // AFNI output filetype
+                        Alternative
+                            ['NIFTI', 'AFNI', 'NIFTI_GZ']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            Fourier // Program to lowpass and/or highpass each voxel time series in a
+                mandatory
+                     in_file // input file to 3dFourier
+                     lowpass // lowpass
+                     highpass // highpass
+                optional
+                     out_file // output image file name
+                     retrend // Any mean and linear trend are removed before filtering. This will restore the trend after filtering.
+                     num_threads // set number of threads
+                     outputtype // AFNI output filetype
+                        Alternative
+                            ['NIFTI', 'AFNI', 'NIFTI_GZ']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            Hist // Computes average of all voxels in the input dataset
+                mandatory
+                     in_file // input file to 3dHist
+                optional
+                     out_file // Write histogram to niml file with this prefix
+                     showhist // write a text visual histogram
+                     out_show // output image file name
+                     mask // matrix to align input file
+                     nbin // number of bins
+                     max_value // maximum intensity value
+                     min_value // minimum intensity value
+                     bin_width // bin width
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            LFCD // Performs degree centrality on a dataset using a given maskfile
+                mandatory
+                     in_file // input file to 3dLFCD
+                optional
+                     mask // mask file to mask input data
+                     thresh // threshold to exclude connections where corr <= thresh
+                     polort
+                     autoclip // Clip off low-intensity regions in the dataset
+                     automask // Mask the dataset to target brain-only voxels
+                     num_threads // set number of threads
+                     outputtype // AFNI output filetype
+                        Alternative
+                            ['NIFTI', 'AFNI', 'NIFTI_GZ']
+                     out_file // output image file name
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            Maskave // Computes average of all voxels in the input dataset
+                mandatory
+                     in_file // input file to 3dmaskave
+                optional
+                     out_file // output image file name
+                     mask // matrix to align input file
+                     quiet // matrix to align input file
+                     num_threads // set number of threads
+                     outputtype // AFNI output filetype
+                        Alternative
+                            ['NIFTI', 'AFNI', 'NIFTI_GZ']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            Means // Takes the voxel-by-voxel mean of all input datasets using 3dMean
+                mandatory
+                     in_file_a // input file to 3dMean
+                optional
+                     in_file_b // another input file to 3dMean
+                     datum // Sets the data type of the output dataset
+                     out_file // output image file name
+                     scale // scaling of output
+                     non_zero // use only non-zero values
+                     std_dev // calculate std dev
+                     sqr // mean square instead of value
+                     summ // take sum, (not average)
+                     count // compute count of non-zero voxels
+                     mask_inter // create intersection mask
+                     mask_union // create union mask
+                     num_threads // set number of threads
+                     outputtype // AFNI output filetype
+                        Alternative
+                            ['NIFTI', 'AFNI', 'NIFTI_GZ']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            NetCorr // Calculate correlation matrix of a set of ROIs (using mean time series of
+                mandatory
+                     in_file // input time series file (4D data set)
+                     in_rois // input set of ROIs, each labelled with distinct integers
+                optional
+                     mask // can include a whole brain mask within which to calculate correlation. Otherwise, data should be masked already
+                     weight_ts // input a 1D file WTS of weights that will be applied multiplicatively to each ROI's average time series. WTS can be a column- or row-file of values, but it must have the same length as the input time series volume. If the initial average time series was A[n] for n=0,..,(N-1) time points, then applying a set of weights W[n] of the same length from WTS would produce a new time series: B[n] = A[n] * W[n]
+                     fish_z // switch to also output a matrix of Fisher Z-transform values for the corr coefs (r): Z = atanh(r) , (with Z=4 being output along matrix diagonals where r=1, as the r-to-Z conversion is ceilinged at Z = atanh(r=0.999329) = 4, which is still *quite* a high Pearson-r value
+                     part_corr // output the partial correlation matrix
+                     ts_out // switch to output the mean time series of the ROIs that have been used to generate the correlation matrices. Output filenames mirror those of the correlation matrix files, with a '.netts' postfix
+                     ts_label // additional switch when using '-ts_out'. Using this option will insert the integer ROI label at the start of each line of the *.netts file created. Thus, for a time series of length N, each line will have N+1 numbers, where the first is the integer ROI label and the subsequent N are scientific notation values
+                     ts_indiv // switch to create a directory for each network that contains the average time series for each ROI in individual files (each file has one line). The directories are labelled PREFIX_000_INDIV/, PREFIX_001_INDIV/, etc. (one per network). Within each directory, the files are labelled ROI_001.netts, ROI_002.netts, etc., with the numbers given by the actual ROI integer labels
+                     ts_wb_corr // switch to create a set of whole brain correlation maps. Performs whole brain correlation for each ROI's average time series; this will automatically create a directory for each network that contains the set of whole brain correlation maps (Pearson 'r's). The directories are labelled as above for '-ts_indiv' Within each directory, the files are labelled WB_CORR_ROI_001+orig, WB_CORR_ROI_002+orig, etc., with the numbers given by the actual ROI integer labels
+                     ts_wb_Z // same as above in '-ts_wb_corr', except that the maps have been Fisher transformed to Z-scores the relation: Z=atanh(r). To avoid infinities in the transform, Pearson values are effectively capped at |r| = 0.999329 (where |Z| = 4.0). Files are labelled WB_Z_ROI_001+orig, etc
+                     ts_wb_strlabel // by default, '-ts_wb_{corr,Z}' output files are named using the int number of a given ROI, such as: WB_Z_ROI_001+orig. With this option, one can replace the int (such as '001') with the string label (such as 'L-thalamus') *if* one has a labeltable attached to the file
+                     nifti // output any correlation map files as NIFTI files (default is BRIK/HEAD). Only useful if using '-ts_wb_corr' and/or '-ts_wb_Z'
+                     output_mask_nonnull // internally, this program checks for where there are nonnull time series, because we don't like those, in general. With this flag, the user can output the determined mask of non-null time series.
+                     push_thru_many_zeros // by default, this program will grind to a halt and refuse to calculate if any ROI contains >10 percent of voxels with null times series (i.e., each point is 0), as of April, 2017. This is because it seems most likely that hidden badness is responsible. However, if the user still wants to carry on the calculation anyways, then this option will allow one to push on through. However, if any ROI *only* has null time series, then the program will not calculate and the user will really, really, really need to address their masking
+                     ignore_LT // switch to ignore any label table labels in the '-in_rois' file, if there are any labels attached
+                     out_file // output file name part
+                     num_threads // set number of threads
+                     outputtype // AFNI output filetype
+                        Alternative
+                            ['NIFTI', 'AFNI', 'NIFTI_GZ']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            OutlierCount // Calculates number of 'outliers' at each time point of a
+                mandatory
+                     in_file // input dataset
+                optional
+                     mask // only count voxels within the given mask
+                     qthr // indicate a value for q to compute alpha
+                     autoclip // clip off small voxels
+                     automask // clip off small voxels
+                     fraction // write out the fraction of masked voxels which are outliers at each timepoint
+                     interval // write out the median + 3.5 MAD of outlier count with each timepoint
+                     save_outliers // enables out_file option
+                     outliers_file // output image file name
+                     polort // detrend each voxel timeseries with polynomials
+                     legendre // use Legendre polynomials
+                     out_file // capture standard output
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            QualityIndex // Computes a quality index for each sub-brick in a 3D+time dataset.
+                mandatory
+                     in_file // input dataset
+                optional
+                     mask // compute correlation only across masked voxels
+                     spearman // Quality index is 1 minus the Spearman (rank) correlation coefficient of each sub-brick with the median sub-brick. (default).
+                     quadrant // Similar to -spearman, but using 1 minus the quadrant correlation coefficient as the quality index.
+                     autoclip // clip off small voxels
+                     automask // clip off small voxels
+                     clip // clip off values below
+                     interval // write out the median + 3.5 MAD of outlier count with each timepoint
+                     out_file // capture standard output
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            Qwarp
+                mandatory
+                     in_file // Source image (opposite phase encoding direction than base image).
+                     base_file // Base image (opposite phase encoding direction than source image).
+                optional
+                     out_file // Sets the prefix/suffix for the output datasets. * The source dataset is warped to match the base and gets prefix 'ppp'. (Except if '-plusminus' is used * The final interpolation to this output dataset is done using the 'wsinc5' method. See the output of 3dAllineate -HELP (in the "Modifying '-final wsinc5'" section) for the lengthy technical details. * The 3D warp used is saved in a dataset with prefix 'ppp_WARP' -- this dataset can be used with 3dNwarpApply and 3dNwarpCat, for example. * To be clear, this is the warp from source dataset coordinates to base dataset coordinates, where the values at each base grid point are the xyz displacements needed to move that grid point's xyz values to the corresponding xyz values in the source dataset: base( (x,y,z) + WARP(x,y,z) ) matches source(x,y,z) Another way to think of this warp is that it 'pulls' values back from source space to base space. * 3dNwarpApply would use 'ppp_WARP' to transform datasets aligned with the source dataset to be aligned with the base dataset. **If you do NOT want this warp saved, use the option '-nowarp'**. (However, this warp is usually the most valuable possible output!) * If you want to calculate and save the inverse 3D warp, use the option '-iwarp'. This inverse warp will then be saved in a dataset with prefix 'ppp_WARPINV'. * This inverse warp could be used to transform data from base space to source space, if you need to do such an operation. * You can easily compute the inverse later, say by a command like 3dNwarpCat -prefix Z_WARPINV 'INV(Z_WARP+tlrc)' or the inverse can be computed as needed in 3dNwarpApply, like 3dNwarpApply -nwarp 'INV(Z_WARP+tlrc)' -source Dataset.nii ...
+                     resample // This option simply resamples the source dataset to match the base dataset grid. You can use this if the two datasets overlap well (as seen in the AFNI GUI), but are not on the same 3D grid. * If they don't overlap well, allineate them first * The reampling here is done with the 'wsinc5' method, which has very little blurring artifact. * If the base and source datasets ARE on the same 3D grid, then the -resample option will be ignored. * You CAN use -resample with these 3dQwarp options: -plusminus -inilev -iniwarp -duplo
+                     allineate // This option will make 3dQwarp run 3dAllineate first, to align the source dataset to the base with an affine transformation. It will then use that alignment as a starting point for the nonlinear warping.
+                     allineate_opts // add extra options to the 3dAllineate command to be run by 3dQwarp.
+                     nowarp // Do not save the _WARP file.
+                     iwarp // Do compute and save the _WARPINV file.
+                     pear // Use strict Pearson correlation for matching.Not usually recommended, since the 'clipped Pearson' methodused by default will reduce the impact of outlier values.
+                     noneg // Replace negative values in either input volume with 0. * If there ARE negative input values, and you do NOT use -noneg, then strict Pearson correlation will be used, since the 'clipped' method only is implemented for non-negative volumes. * '-noneg' is not the default, since there might be situations where you want to align datasets with positive and negative values mixed. * But, in many cases, the negative values in a dataset are just the result of interpolation artifacts (or other peculiarities), and so they should be ignored. That is what '-noneg' is for.
+                     nopenalty // Replace negative values in either input volume with 0. * If there ARE negative input values, and you do NOT use -noneg, then strict Pearson correlation will be used, since the 'clipped' method only is implemented for non-negative volumes. * '-noneg' is not the default, since there might be situations where you want to align datasets with positive and negative values mixed. * But, in many cases, the negative values in a dataset are just the result of interpolation artifacts (or other peculiarities), and so they should be ignored. That is what '-noneg' is for.
+                     penfac // Use this value to weight the penalty. The default value is 1. Larger values mean the penalty counts more, reducing grid distortions, insha'Allah; '-nopenalty' is the same as '-penfac 0'. In 23 Sep 2013 Zhark increased the default value of the penalty by a factor of 5, and also made it get progressively larger with each level of refinement. Thus, warping results will vary from earlier instances of 3dQwarp. * The progressive increase in the penalty at higher levels means that the 'cost function' can actually look like the alignment is getting worse when the levels change. * IF you wish to turn off this progression, for whatever reason (e.g., to keep compatibility with older results), use the option '-penold'.To be completely compatible with the older 3dQwarp, you'll also have to use '-penfac 0.2'.
+                     noweight // If you want a binary weight (the old default), use this option.That is, each voxel in the base volume automask will beweighted the same in the computation of the cost functional.
+                     weight // Instead of computing the weight from the base dataset,directly input the weight volume from dataset 'www'.Useful if you know what over parts of the base image youwant to emphasize or de-emphasize the matching functional.
+                     wball // "``-wball x y z r f`` Enhance automatic weight from '-useweight' by a factor of 1+f\*Gaussian(FWHM=r) centered in the base image at DICOM coordinates (x,y,z) and with radius 'r'. The goal of this option is to try and make the alignment better in a specific part of the brain. Example: -wball 0 14 6 30 40 to emphasize the thalamic area (in MNI/Talairach space). * The 'r' parameter must be positive! * The 'f' parameter must be between 1 and 100 (inclusive). * '-wball' does nothing if you input your own weight with the '-weight' option. * '-wball' does change the binary weight created by the '-noweight' option. * You can only use '-wball' once in a run of 3dQwarp. **The effect of '-wball' is not dramatic.** The example above makes the average brain image across a collection of subjects a little sharper in the thalamic area, which might have some small value. If you care enough about alignment to use '-wball', then you should examine the results from 3dQwarp for each subject, to see if the alignments are good enough for your purposes.
+                     bandpass
+                     wmask // Similar to '-wball', but here, you provide a dataset 'ws' that indicates where to increase the weight. * The 'ws' dataset must be on the same 3D grid as the base dataset. * 'ws' is treated as a mask -- it only matters where it is nonzero -- otherwise, the values inside are not used. * After 'ws' comes the factor 'f' by which to increase the automatically computed weight. Where 'ws' is nonzero, the weighting will be multiplied by (1+f). * As with '-wball', the factor 'f' should be between 1 and 100.
+                     out_weight_file // Write the weight volume to disk as a dataset
+                     blur // Gaussian blur the input images by 'bb' (FWHM) voxels before doing the alignment (the output dataset will not be blurred). The default is 2.345 (for no good reason). * Optionally, you can provide 2 values for 'bb', and then the first one is applied to the base volume, the second to the source volume. e.g., '-blur 0 3' to skip blurring the base image (if the base is a blurry template, for example). * A negative blur radius means to use 3D median filtering, rather than Gaussian blurring. This type of filtering will better preserve edges, which can be important in alignment. * If the base is a template volume that is already blurry, you probably don't want to blur it again, but blurring the source volume a little is probably a good idea, to help the program avoid trying to match tiny features. * Note that -duplo will blur the volumes some extra amount for the initial small-scale warping, to make that phase of the program converge more rapidly.
+                     pblur // Use progressive blurring; that is, for larger patch sizes, the amount of blurring is larger. The general idea is to avoid trying to match finer details when the patch size and incremental warps are coarse. When '-blur' is used as well, it sets a minimum amount of blurring that will be used. [06 Aug 2014 -- '-pblur' may become the default someday]. * You can optionally give the fraction of the patch size that is used for the progressive blur by providing a value between 0 and 0.25 after '-pblur'. If you provide TWO values, the the first fraction is used for progressively blurring the base image and the second for the source image. The default parameters when just '-pblur' is given is the same as giving the options as '-pblur 0.09 0.09'. * '-pblur' is useful when trying to match 2 volumes with high amounts of detail; e.g, warping one subject's brain image to match another's, or trying to warp to match a detailed template. * Note that using negative values with '-blur' means that the progressive blurring will be done with median filters, rather than Gaussian linear blurring. Note: The combination of the -allineate and -pblur options will make the results of using 3dQwarp to align to a template somewhat less sensitive to initial head position and scaling.
+                     emask // Here, 'ee' is a dataset to specify a mask of voxelsto EXCLUDE from the analysis -- all voxels in 'ee'that are NONZERO will not be used in the alignment.The base image always automasked -- the emask isextra, to indicate voxels you definitely DON'T wantincluded in the matching process, even if they areinside the brain.
+                     noXdis // Warp will not displace in x direction
+                     noYdis // Warp will not displace in y direction
+                     noZdis // Warp will not displace in z direction
+                     iniwarp // A dataset with an initial nonlinear warp to use. * If this option is not used, the initial warp is the identity. * You can specify a catenation of warps (in quotes) here, as in program 3dNwarpApply. * As a special case, if you just input an affine matrix in a .1D file, that will work also -- it is treated as giving the initial warp via the string "IDENT(base_dataset) matrix_file.aff12.1D". * You CANNOT use this option with -duplo !! * -iniwarp is usually used with -inilev to re-start 3dQwarp from a previous stopping point.
+                     inilev // The initial refinement 'level' at which to start. * Usually used with -iniwarp; CANNOT be used with -duplo. * The combination of -inilev and -iniwarp lets you take the results of a previous 3dQwarp run and refine them further: Note that the source dataset in the second run is the SAME as in the first run. If you don't see why this is necessary, then you probably need to seek help from an AFNI guru.
+                     minpatch // The value of mm should be an odd integer. * The default value of mm is 25. * For more accurate results than mm=25, try 19 or 13. * The smallest allowed patch size is 5. * You may want stop at a larger patch size (say 7 or 9) and use the -Qfinal option to run that final level with quintic warps, which might run faster and provide the same degree of warp detail. * Trying to make two different brain volumes match in fine detail is usually a waste of time, especially in humans. There is too much variability in anatomy to match gyrus to gyrus accurately. For this reason, the default minimum patch size is 25 voxels. Using a smaller '-minpatch' might try to force the warp to match features that do not match, and the result can be useless image distortions -- another reason to LOOK AT THE RESULTS.
+                     maxlev // The initial refinement 'level' at which to start. * Usually used with -iniwarp; CANNOT be used with -duplo. * The combination of -inilev and -iniwarp lets you take the results of a previous 3dQwarp run and refine them further: Note that the source dataset in the second run is the SAME as in the first run. If you don't see why this is necessary, then you probably need to seek help from an AFNI guru.
+                     gridlist // This option provides an alternate way to specify the patch grid sizes used in the warp optimization process. 'gl' is a 1D file with a list of patches to use -- in most cases, you will want to use it in the following form: ``-gridlist '1D: 0 151 101 75 51'`` * Here, a 0 patch size means the global domain. Patch sizes otherwise should be odd integers >= 5. * If you use the '0' patch size again after the first position, you will actually get an iteration at the size of the default patch level 1, where the patch sizes are 75% of the volume dimension. There is no way to force the program to literally repeat the sui generis step of lev=0.
+                     allsave // This option lets you save the output warps from each level" of the refinement process. Mostly used for experimenting." Will only save all the outputs if the program terminates" normally -- if it crashes, or freezes, then all these" warps are lost.
+                     duplo // Start off with 1/2 scale versions of the volumes," for getting a speedy coarse first alignment." * Then scales back up to register the full volumes." The goal is greater speed, and it seems to help this" positively piggish program to be more expeditious." * However, accuracy is somewhat lower with '-duplo'," for reasons that currently elude Zhark; for this reason," the Emperor does not usually use '-duplo'.
+                     workhard // Iterate more times, which can help when the volumes are hard to align at all, or when you hope to get a more precise alignment. * Slows the program down (possibly a lot), of course. * When you combine '-workhard' with '-duplo', only the full size volumes get the extra iterations. * For finer control over which refinement levels work hard, you can use this option in the form (for example) ``-workhard:4:7`` which implies the extra iterations will be done at levels 4, 5, 6, and 7, but not otherwise. * You can also use '-superhard' to iterate even more, but this extra option will REALLY slow things down. * Under most circumstances, you should not need to use either ``-workhard`` or ``-superhard``. * The fastest way to register to a template image is via the ``-duplo`` option, and without the ``-workhard`` or ``-superhard`` options. * If you use this option in the form '-Workhard' (first letter in upper case), then the second iteration at each level is done with quintic polynomial warps.
+                     Qfinal // At the finest patch size (the final level), use Hermite quintic polynomials for the warp instead of cubic polynomials. * In a 3D 'patch', there are 2x2x2x3=24 cubic polynomial basis function parameters over which to optimize (2 polynomials dependent on each of the x,y,z directions, and 3 different directions of displacement). * There are 3x3x3x3=81 quintic polynomial parameters per patch. * With -Qfinal, the final level will have more detail in the allowed warps, at the cost of yet more CPU time. * However, no patch below 7x7x7 in size will be done with quintic polynomials. * This option is also not usually needed, and is experimental.
+                     Qonly // Use Hermite quintic polynomials at all levels. * Very slow (about 4 times longer). Also experimental. * Will produce a (discrete representation of a) C2 warp.
+                     plusminus // Normally, the warp displacements dis(x) are defined to match base(x) to source(x+dis(x)). With this option, the match is between base(x-dis(x)) and source(x+dis(x)) -- the two images 'meet in the middle'. * One goal is to mimic the warping done to MRI EPI data by field inhomogeneities, when registering between a 'blip up' and a 'blip down' down volume, which will have opposite distortions. * Define Wp(x) = x+dis(x) and Wm(x) = x-dis(x). Then since base(Wm(x)) matches source(Wp(x)), by substituting INV(Wm(x)) wherever we see x, we have base(x) matches source(Wp(INV(Wm(x)))); that is, the warp V(x) that one would get from the 'usual' way of running 3dQwarp is V(x) = Wp(INV(Wm(x))). * Conversely, we can calculate Wp(x) in terms of V(x) as follows: If V(x) = x + dv(x), define Vh(x) = x + dv(x)/2; then Wp(x) = V(INV(Vh(x))) * With the above formulas, it is possible to compute Wp(x) from V(x) and vice-versa, using program 3dNwarpCalc. The requisite commands are left as an exercise for the aspiring AFNI Jedi Master. * You can use the semi-secret '-pmBASE' option to get the V(x) warp and the source dataset warped to base space, in addition to the Wp(x) '_PLUS' and Wm(x) '_MINUS' warps. * Alas: -plusminus does not work with -duplo or -allineate :-( * However, you can use -iniwarp with -plusminus :-) * The outputs have _PLUS (from the source dataset) and _MINUS (from the base dataset) in their filenames, in addition to the prefix. The -iwarp option, if present, will be ignored.
+                     nopad // Do NOT use zero-padding on the 3D base and source images. [Default == zero-pad, if needed] * The underlying model for deformations goes to zero at the edge of the volume being warped. However, if there is significant data near an edge of the volume, then it won't get displaced much, and so the results might not be good. * Zero padding is designed as a way to work around this potential problem. You should NOT need the '-nopad' option for any reason that Zhark can think of, but it is here to be symmetrical with 3dAllineate. * Note that the output (warped from source) dataset will be on the base dataset grid whether or not zero-padding is allowed. However, unless you use the following option, allowing zero-padding (i.e., the default operation) will make the output WARP dataset(s) be on a larger grid (also see '-expad' below).
+                     nopadWARP // If for some reason you require the warp volume tomatch the base volume, then use this option to have the outputWARP dataset(s) truncated.
+                     expad // This option instructs the program to pad the warp by an extra'EE' voxels (and then 3dQwarp starts optimizing it).This option is seldom needed, but can be useful if youmight later catenate the nonlinear warp -- via 3dNwarpCat --with an affine transformation that contains a large shift.Under that circumstance, the nonlinear warp might be shiftedpartially outside its original grid, so expanding that gridcan avoid this problem.Note that this option perforce turns off '-nopadWARP'.
+                     ballopt // Normally, the incremental warp parameters are optimized insidea rectangular 'box' (24 dimensional for cubic patches, 81 forquintic patches), whose limits define the amount of distortionallowed at each step. Using '-ballopt' switches these limitsto be applied to a 'ball' (interior of a hypersphere), whichcan allow for larger incremental displacements. Use thisoption if you think things need to be able to move farther.
+                     baxopt // Use the 'box' optimization limits instead of the 'ball'[this is the default at present].Note that if '-workhard' is used, then ball and box optimizationare alternated in the different iterations at each level, sothese two options have no effect in that case.
+                     verb // more detailed description of the process
+                     quiet // Cut out most of the fun fun fun progress messages :-(
+                     overwrite // Overwrite outputs
+                     lpc // Local Pearson minimization (i.e., EPI-T1 registration)This option has not be extensively testedIf you use '-lpc', then '-maxlev 0' is automatically set.If you want to go to more refined levels, you can set '-maxlev'This should be set up to have lpc as the second to last argumentand maxlev as the second to last argument, as needed by AFNIUsing maxlev > 1 is not recommended for EPI-T1 alignment.
+                     lpa // Local Pearson maximization. This option has not be extensively tested
+                     hel // Hellinger distance: a matching function for the adventurousThis option has NOT be extensively tested for usefulnessand should be considered experimental at this infundibulum.
+                     mi // Mutual Information: a matching function for the adventurousThis option has NOT be extensively tested for usefulnessand should be considered experimental at this infundibulum.
+                     nmi // Normalized Mutual Information: a matching function for the adventurousThis option has NOT been extensively tested for usefulnessand should be considered experimental at this infundibulum.
+                     num_threads // set number of threads
+                     outputtype // AFNI output filetype
+                        Alternative
+                            ['NIFTI', 'AFNI', 'NIFTI_GZ']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            QwarpPlusMinus // A version of 3dQwarp for performing field susceptibility correction
+                mandatory
+                     in_file // Source image (opposite phase encoding direction than base image).
+                     base_file // Base image (opposite phase encoding direction than source image).
+                optional
+                     source_file // Source image (opposite phase encoding direction than base image)
+                     out_file // Output file
+                     plusminus // Normally, the warp displacements dis(x) are defined to matchbase(x) to source(x+dis(x)). With this option, the matchis between base(x-dis(x)) and source(x+dis(x)) -- the twoimages 'meet in the middle'. For more info, view Qwarp` interface
+                     resample // This option simply resamples the source dataset to match the base dataset grid. You can use this if the two datasets overlap well (as seen in the AFNI GUI), but are not on the same 3D grid. * If they don't overlap well, allineate them first * The reampling here is done with the 'wsinc5' method, which has very little blurring artifact. * If the base and source datasets ARE on the same 3D grid, then the -resample option will be ignored. * You CAN use -resample with these 3dQwarp options: -plusminus -inilev -iniwarp -duplo
+                     allineate // This option will make 3dQwarp run 3dAllineate first, to align the source dataset to the base with an affine transformation. It will then use that alignment as a starting point for the nonlinear warping.
+                     allineate_opts // add extra options to the 3dAllineate command to be run by 3dQwarp.
+                     nowarp // Do not save the _WARP file.
+                     iwarp // Do compute and save the _WARPINV file.
+                     pear // Use strict Pearson correlation for matching.Not usually recommended, since the 'clipped Pearson' methodused by default will reduce the impact of outlier values.
+                     noneg // Replace negative values in either input volume with 0. * If there ARE negative input values, and you do NOT use -noneg, then strict Pearson correlation will be used, since the 'clipped' method only is implemented for non-negative volumes. * '-noneg' is not the default, since there might be situations where you want to align datasets with positive and negative values mixed. * But, in many cases, the negative values in a dataset are just the result of interpolation artifacts (or other peculiarities), and so they should be ignored. That is what '-noneg' is for.
+                     nopenalty // Replace negative values in either input volume with 0. * If there ARE negative input values, and you do NOT use -noneg, then strict Pearson correlation will be used, since the 'clipped' method only is implemented for non-negative volumes. * '-noneg' is not the default, since there might be situations where you want to align datasets with positive and negative values mixed. * But, in many cases, the negative values in a dataset are just the result of interpolation artifacts (or other peculiarities), and so they should be ignored. That is what '-noneg' is for.
+                     penfac // Use this value to weight the penalty. The default value is 1. Larger values mean the penalty counts more, reducing grid distortions, insha'Allah; '-nopenalty' is the same as '-penfac 0'. In 23 Sep 2013 Zhark increased the default value of the penalty by a factor of 5, and also made it get progressively larger with each level of refinement. Thus, warping results will vary from earlier instances of 3dQwarp. * The progressive increase in the penalty at higher levels means that the 'cost function' can actually look like the alignment is getting worse when the levels change. * IF you wish to turn off this progression, for whatever reason (e.g., to keep compatibility with older results), use the option '-penold'.To be completely compatible with the older 3dQwarp, you'll also have to use '-penfac 0.2'.
+                     noweight // If you want a binary weight (the old default), use this option.That is, each voxel in the base volume automask will beweighted the same in the computation of the cost functional.
+                     weight // Instead of computing the weight from the base dataset,directly input the weight volume from dataset 'www'.Useful if you know what over parts of the base image youwant to emphasize or de-emphasize the matching functional.
+                     wball // "``-wball x y z r f`` Enhance automatic weight from '-useweight' by a factor of 1+f\*Gaussian(FWHM=r) centered in the base image at DICOM coordinates (x,y,z) and with radius 'r'. The goal of this option is to try and make the alignment better in a specific part of the brain. Example: -wball 0 14 6 30 40 to emphasize the thalamic area (in MNI/Talairach space). * The 'r' parameter must be positive! * The 'f' parameter must be between 1 and 100 (inclusive). * '-wball' does nothing if you input your own weight with the '-weight' option. * '-wball' does change the binary weight created by the '-noweight' option. * You can only use '-wball' once in a run of 3dQwarp. **The effect of '-wball' is not dramatic.** The example above makes the average brain image across a collection of subjects a little sharper in the thalamic area, which might have some small value. If you care enough about alignment to use '-wball', then you should examine the results from 3dQwarp for each subject, to see if the alignments are good enough for your purposes.
+                     bandpass
+                     wmask // Similar to '-wball', but here, you provide a dataset 'ws' that indicates where to increase the weight. * The 'ws' dataset must be on the same 3D grid as the base dataset. * 'ws' is treated as a mask -- it only matters where it is nonzero -- otherwise, the values inside are not used. * After 'ws' comes the factor 'f' by which to increase the automatically computed weight. Where 'ws' is nonzero, the weighting will be multiplied by (1+f). * As with '-wball', the factor 'f' should be between 1 and 100.
+                     out_weight_file // Write the weight volume to disk as a dataset
+                     blur // Gaussian blur the input images by 'bb' (FWHM) voxels before doing the alignment (the output dataset will not be blurred). The default is 2.345 (for no good reason). * Optionally, you can provide 2 values for 'bb', and then the first one is applied to the base volume, the second to the source volume. e.g., '-blur 0 3' to skip blurring the base image (if the base is a blurry template, for example). * A negative blur radius means to use 3D median filtering, rather than Gaussian blurring. This type of filtering will better preserve edges, which can be important in alignment. * If the base is a template volume that is already blurry, you probably don't want to blur it again, but blurring the source volume a little is probably a good idea, to help the program avoid trying to match tiny features. * Note that -duplo will blur the volumes some extra amount for the initial small-scale warping, to make that phase of the program converge more rapidly.
+                     pblur // Use progressive blurring; that is, for larger patch sizes, the amount of blurring is larger. The general idea is to avoid trying to match finer details when the patch size and incremental warps are coarse. When '-blur' is used as well, it sets a minimum amount of blurring that will be used. [06 Aug 2014 -- '-pblur' may become the default someday]. * You can optionally give the fraction of the patch size that is used for the progressive blur by providing a value between 0 and 0.25 after '-pblur'. If you provide TWO values, the the first fraction is used for progressively blurring the base image and the second for the source image. The default parameters when just '-pblur' is given is the same as giving the options as '-pblur 0.09 0.09'. * '-pblur' is useful when trying to match 2 volumes with high amounts of detail; e.g, warping one subject's brain image to match another's, or trying to warp to match a detailed template. * Note that using negative values with '-blur' means that the progressive blurring will be done with median filters, rather than Gaussian linear blurring. Note: The combination of the -allineate and -pblur options will make the results of using 3dQwarp to align to a template somewhat less sensitive to initial head position and scaling.
+                     emask // Here, 'ee' is a dataset to specify a mask of voxelsto EXCLUDE from the analysis -- all voxels in 'ee'that are NONZERO will not be used in the alignment.The base image always automasked -- the emask isextra, to indicate voxels you definitely DON'T wantincluded in the matching process, even if they areinside the brain.
+                     noXdis // Warp will not displace in x direction
+                     noYdis // Warp will not displace in y direction
+                     noZdis // Warp will not displace in z direction
+                     iniwarp // A dataset with an initial nonlinear warp to use. * If this option is not used, the initial warp is the identity. * You can specify a catenation of warps (in quotes) here, as in program 3dNwarpApply. * As a special case, if you just input an affine matrix in a .1D file, that will work also -- it is treated as giving the initial warp via the string "IDENT(base_dataset) matrix_file.aff12.1D". * You CANNOT use this option with -duplo !! * -iniwarp is usually used with -inilev to re-start 3dQwarp from a previous stopping point.
+                     inilev // The initial refinement 'level' at which to start. * Usually used with -iniwarp; CANNOT be used with -duplo. * The combination of -inilev and -iniwarp lets you take the results of a previous 3dQwarp run and refine them further: Note that the source dataset in the second run is the SAME as in the first run. If you don't see why this is necessary, then you probably need to seek help from an AFNI guru.
+                     minpatch // The value of mm should be an odd integer. * The default value of mm is 25. * For more accurate results than mm=25, try 19 or 13. * The smallest allowed patch size is 5. * You may want stop at a larger patch size (say 7 or 9) and use the -Qfinal option to run that final level with quintic warps, which might run faster and provide the same degree of warp detail. * Trying to make two different brain volumes match in fine detail is usually a waste of time, especially in humans. There is too much variability in anatomy to match gyrus to gyrus accurately. For this reason, the default minimum patch size is 25 voxels. Using a smaller '-minpatch' might try to force the warp to match features that do not match, and the result can be useless image distortions -- another reason to LOOK AT THE RESULTS.
+                     maxlev // The initial refinement 'level' at which to start. * Usually used with -iniwarp; CANNOT be used with -duplo. * The combination of -inilev and -iniwarp lets you take the results of a previous 3dQwarp run and refine them further: Note that the source dataset in the second run is the SAME as in the first run. If you don't see why this is necessary, then you probably need to seek help from an AFNI guru.
+                     gridlist // This option provides an alternate way to specify the patch grid sizes used in the warp optimization process. 'gl' is a 1D file with a list of patches to use -- in most cases, you will want to use it in the following form: ``-gridlist '1D: 0 151 101 75 51'`` * Here, a 0 patch size means the global domain. Patch sizes otherwise should be odd integers >= 5. * If you use the '0' patch size again after the first position, you will actually get an iteration at the size of the default patch level 1, where the patch sizes are 75% of the volume dimension. There is no way to force the program to literally repeat the sui generis step of lev=0.
+                     allsave // This option lets you save the output warps from each level" of the refinement process. Mostly used for experimenting." Will only save all the outputs if the program terminates" normally -- if it crashes, or freezes, then all these" warps are lost.
+                     duplo // Start off with 1/2 scale versions of the volumes," for getting a speedy coarse first alignment." * Then scales back up to register the full volumes." The goal is greater speed, and it seems to help this" positively piggish program to be more expeditious." * However, accuracy is somewhat lower with '-duplo'," for reasons that currently elude Zhark; for this reason," the Emperor does not usually use '-duplo'.
+                     workhard // Iterate more times, which can help when the volumes are hard to align at all, or when you hope to get a more precise alignment. * Slows the program down (possibly a lot), of course. * When you combine '-workhard' with '-duplo', only the full size volumes get the extra iterations. * For finer control over which refinement levels work hard, you can use this option in the form (for example) ``-workhard:4:7`` which implies the extra iterations will be done at levels 4, 5, 6, and 7, but not otherwise. * You can also use '-superhard' to iterate even more, but this extra option will REALLY slow things down. * Under most circumstances, you should not need to use either ``-workhard`` or ``-superhard``. * The fastest way to register to a template image is via the ``-duplo`` option, and without the ``-workhard`` or ``-superhard`` options. * If you use this option in the form '-Workhard' (first letter in upper case), then the second iteration at each level is done with quintic polynomial warps.
+                     Qfinal // At the finest patch size (the final level), use Hermite quintic polynomials for the warp instead of cubic polynomials. * In a 3D 'patch', there are 2x2x2x3=24 cubic polynomial basis function parameters over which to optimize (2 polynomials dependent on each of the x,y,z directions, and 3 different directions of displacement). * There are 3x3x3x3=81 quintic polynomial parameters per patch. * With -Qfinal, the final level will have more detail in the allowed warps, at the cost of yet more CPU time. * However, no patch below 7x7x7 in size will be done with quintic polynomials. * This option is also not usually needed, and is experimental.
+                     Qonly // Use Hermite quintic polynomials at all levels. * Very slow (about 4 times longer). Also experimental. * Will produce a (discrete representation of a) C2 warp.
+                     nopad // Do NOT use zero-padding on the 3D base and source images. [Default == zero-pad, if needed] * The underlying model for deformations goes to zero at the edge of the volume being warped. However, if there is significant data near an edge of the volume, then it won't get displaced much, and so the results might not be good. * Zero padding is designed as a way to work around this potential problem. You should NOT need the '-nopad' option for any reason that Zhark can think of, but it is here to be symmetrical with 3dAllineate. * Note that the output (warped from source) dataset will be on the base dataset grid whether or not zero-padding is allowed. However, unless you use the following option, allowing zero-padding (i.e., the default operation) will make the output WARP dataset(s) be on a larger grid (also see '-expad' below).
+                     nopadWARP // If for some reason you require the warp volume tomatch the base volume, then use this option to have the outputWARP dataset(s) truncated.
+                     expad // This option instructs the program to pad the warp by an extra'EE' voxels (and then 3dQwarp starts optimizing it).This option is seldom needed, but can be useful if youmight later catenate the nonlinear warp -- via 3dNwarpCat --with an affine transformation that contains a large shift.Under that circumstance, the nonlinear warp might be shiftedpartially outside its original grid, so expanding that gridcan avoid this problem.Note that this option perforce turns off '-nopadWARP'.
+                     ballopt // Normally, the incremental warp parameters are optimized insidea rectangular 'box' (24 dimensional for cubic patches, 81 forquintic patches), whose limits define the amount of distortionallowed at each step. Using '-ballopt' switches these limitsto be applied to a 'ball' (interior of a hypersphere), whichcan allow for larger incremental displacements. Use thisoption if you think things need to be able to move farther.
+                     baxopt // Use the 'box' optimization limits instead of the 'ball'[this is the default at present].Note that if '-workhard' is used, then ball and box optimizationare alternated in the different iterations at each level, sothese two options have no effect in that case.
+                     verb // more detailed description of the process
+                     quiet // Cut out most of the fun fun fun progress messages :-(
+                     overwrite // Overwrite outputs
+                     lpc // Local Pearson minimization (i.e., EPI-T1 registration)This option has not be extensively testedIf you use '-lpc', then '-maxlev 0' is automatically set.If you want to go to more refined levels, you can set '-maxlev'This should be set up to have lpc as the second to last argumentand maxlev as the second to last argument, as needed by AFNIUsing maxlev > 1 is not recommended for EPI-T1 alignment.
+                     lpa // Local Pearson maximization. This option has not be extensively tested
+                     hel // Hellinger distance: a matching function for the adventurousThis option has NOT be extensively tested for usefulnessand should be considered experimental at this infundibulum.
+                     mi // Mutual Information: a matching function for the adventurousThis option has NOT be extensively tested for usefulnessand should be considered experimental at this infundibulum.
+                     nmi // Normalized Mutual Information: a matching function for the adventurousThis option has NOT been extensively tested for usefulnessand should be considered experimental at this infundibulum.
+                     num_threads // set number of threads
+                     outputtype // AFNI output filetype
+                        Alternative
+                            ['NIFTI', 'AFNI', 'NIFTI_GZ']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            ROIStats // Display statistics over masked regions
+                mandatory
+                     in_file // input dataset
+                optional
+                     mask // input mask
+                     mask_file // input mask
+                     mask_f2short // Tells the program to convert a float mask to short integers, by simple rounding.
+                     num_roi // Forces the assumption that the mask dataset's ROIs are denoted by 1 to n inclusive. Normally, the program figures out the ROIs on its own. This option is useful if a) you are certain that the mask dataset has no values outside the range [0 n], b) there may be some ROIs missing between [1 n] in the mask data-set and c) you want those columns in the output any-way so the output lines up with the output from other invocations of 3dROIstats.
+                     zerofill // For ROI labels not found, use the provided string instead of a '0' in the output file. Only active if `num_roi` is enabled.
+                     roisel // Only considers ROIs denoted by values found in the specified file. Note that the order of the ROIs as specified in the file is not preserved. So an SEL.1D of '2 8 20' produces the same output as '8 20 2'
+                     debug // print debug information
+                     quiet // execute quietly
+                     nomeanout // Do not include the (zero-inclusive) mean among computed stats
+                     nobriklab // Do not print the sub-brick label next to its index
+                     format1D // Output results in a 1D format that includes commented labels
+                     format1DR // Output results in a 1D format that includes uncommented labels. May not work optimally with typical 1D functions, but is useful for R functions.
+                     stat // Statistics to compute. Options include: * mean = Compute the mean using only non_zero voxels. Implies the opposite for the mean computed by default. * median = Compute the median of nonzero voxels * mode = Compute the mode of nonzero voxels. (integral valued sets only) * minmax = Compute the min/max of nonzero voxels * sum = Compute the sum using only nonzero voxels. * voxels = Compute the number of nonzero voxels * sigma = Compute the standard deviation of nonzero voxels Statistics that include zero-valued voxels: * zerominmax = Compute the min/max of all voxels. * zerosigma = Compute the standard deviation of all voxels. * zeromedian = Compute the median of all voxels. * zeromode = Compute the mode of all voxels. * summary = Only output a summary line with the grand mean across all briks in the input dataset. This option cannot be used with nomeanout. More that one option can be specified.
+                     out_file // output file
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            Retroicor // Performs Retrospective Image Correction for physiological
+                mandatory
+                     in_file // input file to 3dretroicor
+                optional
+                     out_file // output image file name
+                     card // 1D cardiac data file for cardiac correction
+                     resp // 1D respiratory waveform data for correction
+                     threshold // Threshold for detection of R-wave peaks in input (Make sure it is above the background noise level, Try 3/4 or 4/5 times range plus minimum)
+                     order // The order of the correction (2 is typical)
+                     cardphase // Filename for 1D cardiac phase output
+                     respphase // Filename for 1D resp phase output
+                     num_threads // set number of threads
+                     outputtype // AFNI output filetype
+                        Alternative
+                            ['NIFTI', 'AFNI', 'NIFTI_GZ']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            Seg // 3dSeg segments brain volumes into tissue classes. The program allows
+                mandatory
+                     in_file // ANAT is the volume to segment
+                optional
+                     mask
+                     blur_meth // set the blurring method for bias field estimation
+                        Alternative
+                            ['BFT', 'BIM']
+                     bias_fwhm // The amount of blurring used when estimating the field bias with the Wells method
+                     classes // CLASS_STRING is a semicolon delimited string of class labels
+                     bmrf // Weighting factor controlling spatial homogeneity of the classifications
+                     bias_classes // A semicolon delimited string of classes that contribute to the estimation of the bias field
+                     prefix // the prefix for the output folder containing all output volumes
+                     mixfrac // MIXFRAC sets up the volume-wide (within mask) tissue fractions while initializing the segmentation (see IGNORE for exception)
+                     mixfloor // Set the minimum value for any class's mixing fraction
+                     main_N // Number of iterations to perform.
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            SkullStrip // A program to extract the brain from surrounding tissue from MRI
+                mandatory
+                     in_file // input file to 3dSkullStrip
+                optional
+                     out_file // output image file name
+                     num_threads // set number of threads
+                     outputtype // AFNI output filetype
+                        Alternative
+                            ['NIFTI', 'AFNI', 'NIFTI_GZ']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            TCorr1D // Computes the correlation coefficient between each voxel time series
+                mandatory
+                     xset // 3d+time dataset input
+                     y_1d // 1D time series file input
+                optional
+                     out_file // output filename prefix
+                     pearson // Correlation is the normal Pearson correlation coefficient
+                     spearman // Correlation is the Spearman (rank) correlation coefficient
+                     quadrant // Correlation is the quadrant correlation coefficient
+                     ktaub // Correlation is the Kendall's tau_b correlation coefficient
+                     num_threads // set number of threads
+                     outputtype // AFNI output filetype
+                        Alternative
+                            ['NIFTI', 'AFNI', 'NIFTI_GZ']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            TCorrMap // For each voxel time series, computes the correlation between it
+                mandatory
+                     in_file
+                optional
+                     seeds
+                     mask
+                     automask
+                     polort
+                     bandpass
+                     regress_out_timeseries
+                     blur_fwhm
+                     seeds_width
+                     mean_file
+                     zmean
+                     qmean
+                     pmean
+                     thresholds
+                     absolute_threshold
+                     var_absolute_threshold
+                     var_absolute_threshold_normalize
+                     correlation_maps
+                     correlation_maps_masked
+                     expr
+                     average_expr
+                     average_expr_nonzero
+                     sum_expr
+                     histogram_bin_numbers
+                     histogram
+                     num_threads // set number of threads
+                     outputtype // AFNI output filetype
+                        Alternative
+                            ['NIFTI', 'AFNI', 'NIFTI_GZ']
+                     out_file // output image file name
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            TCorrelate // Computes the correlation coefficient between corresponding voxel
+                mandatory
+                     xset // input xset
+                     yset // input yset
+                optional
+                     out_file // output image file name
+                     pearson // Correlation is the normal Pearson correlation coefficient
+                     polort // Remove polynomial trend of order m
+                     num_threads // set number of threads
+                     outputtype // AFNI output filetype
+                        Alternative
+                            ['NIFTI', 'AFNI', 'NIFTI_GZ']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            TNorm // Shifts voxel time series from input so that separate slices are aligned
+                mandatory
+                     in_file // input file to 3dTNorm
+                optional
+                     out_file // output image file name
+                     norm2 // L2 normalize (sum of squares = 1) [DEFAULT]
+                     normR // normalize so sum of squares = number of time points \* e.g., so RMS = 1.
+                     norm1 // L1 normalize (sum of absolute values = 1)
+                     normx // Scale so max absolute value = 1 (L_infinity norm)
+                     polort // Detrend with polynomials of order p before normalizing [DEFAULT = don't do this]. Use '-polort 0' to remove the mean, for example
+                     L1fit // Detrend with L1 regression (L2 is the default) This option is here just for the hell of it
+                     num_threads // set number of threads
+                     outputtype // AFNI output filetype
+                        Alternative
+                            ['NIFTI', 'AFNI', 'NIFTI_GZ']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            TProject
+                mandatory
+                     in_file // input file to 3dTproject
+                optional
+                     out_file // output image file name
+                     censor // Filename of censor .1D time series. This is a file of 1s and 0s, indicating which time points are to be included (1) and which are to be excluded (0).
+                     censortr // List of strings that specify time indexes to be removed from the analysis. Each string is of one of the following forms: * ``37`` => remove global time index #37 * ``2:37`` => remove time index #37 in run #2 * ``37..47`` => remove global time indexes #37-47 * ``37-47`` => same as above * ``2:37..47`` => remove time indexes #37-47 in run #2 * ``*:0-2`` => remove time indexes #0-2 in all runs * Time indexes within each run start at 0. * Run indexes start at 1 (just be to confusing). * N.B.: 2:37,47 means index #37 in run #2 and global time index 47; it does NOT mean index #37 in run #2 AND index #47 in run #2.
+                     cenmode // Specifies how censored time points are treated in the output dataset: * mode = ZERO -- put zero values in their place; output dataset is same length as input * mode = KILL -- remove those time points; output dataset is shorter than input * mode = NTRP -- censored values are replaced by interpolated neighboring (in time) non-censored values, BEFORE any projections, and then the analysis proceeds without actual removal of any time points -- this feature is to keep the Spanish Inquisition happy. * The default mode is KILL !!!
+                        Alternative
+                            ['KILL', 'ZERO', 'NTRP']
+                     concat // The catenation file, as in 3dDeconvolve, containing the TR indexes of the start points for each contiguous run within the input dataset (the first entry should be 0). * Also as in 3dDeconvolve, if the input dataset is automatically catenated from a collection of datasets, then the run start indexes are determined directly, and '-concat' is not needed (and will be ignored). * Each run must have at least 9 time points AFTER censoring, or the program will not work! * The only use made of this input is in setting up the bandpass/stopband regressors. * '-ort' and '-dsort' regressors run through all time points, as read in. If you want separate projections in each run, then you must either break these ort files into appropriate components, OR you must run 3dTproject for each run separately, using the appropriate pieces from the ort files via the ``{...}`` selector for the 1D files and the ``[...]`` selector for the datasets.
+                     noblock // Also as in 3dDeconvolve, if you want the program to treat an auto-catenated dataset as one long run, use this option. However, '-noblock' will not affect catenation if you use the '-concat' option.
+                     ort // Remove each column in file. Each column will have its mean removed.
+                     polort // Remove polynomials up to and including degree pp. * Default value is 2. * It makes no sense to use a value of pp greater than 2, if you are bandpassing out the lower frequencies! * For catenated datasets, each run gets a separate set set of pp+1 Legendre polynomial regressors. * Use of -polort -1 is not advised (if data mean != 0), even if -ort contains constant terms, as all means are removed.
+                     dsort // Remove the 3D+time time series in dataset fset. * That is, 'fset' contains a different nuisance time series for each voxel (e.g., from AnatICOR). * Multiple -dsort options are allowed.
+                     bandpass // Remove all frequencies EXCEPT those in the range
+                     stopband // Remove all frequencies in the range
+                     TR // Use time step dd for the frequency calculations, rather than the value stored in the dataset header.
+                     mask // Only operate on voxels nonzero in the mset dataset. * Voxels outside the mask will be filled with zeros. * If no masking option is given, then all voxels will be processed.
+                     automask // Generate a mask automatically
+                     blur // Blur (inside the mask only) with a filter that has width (FWHM) of fff millimeters. Spatial blurring (if done) is after the time series filtering.
+                     norm // Normalize each output time series to have sum of squares = 1. This is the LAST operation.
+                     num_threads // set number of threads
+                     outputtype // AFNI output filetype
+                        Alternative
+                            ['NIFTI', 'AFNI', 'NIFTI_GZ']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            TShift // Shifts voxel time series from input so that separate slices are aligned
+                mandatory
+                     in_file // input file to 3dTshift
+                optional
+                     out_file // output image file name
+                     tr // manually set the TR. You can attach suffix "s" for seconds or "ms" for milliseconds.
+                     tzero // align each slice to given time offset
+                     tslice // align each slice to time offset of given slice
+                     ignore // ignore the first set of points specified
+                     interp // different interpolation methods (see 3dTshift for details) default = Fourier
+                        Alternative
+                            ['Fourier', 'linear', 'cubic', 'quintic', 'heptic']
+                     tpattern
+                     slice_timing
+                     slice_encoding_direction // Direction in which slice_timing is specified (default: k). If negative,slice_timing is defined in reverse order, that is, the first entry corresponds to the slice with the largest index, and the final entry corresponds to slice index zero. Only in effect when slice_timing is passed as list, not when it is passed as file.
+                        Alternative
+                            ['k', 'k-']
+                     rlt // Before shifting, remove the mean and linear trend
+                     rltplus // Before shifting, remove the mean and linear trend and later put back the mean
+                     num_threads // set number of threads
+                     outputtype // AFNI output filetype
+                        Alternative
+                            ['NIFTI', 'AFNI', 'NIFTI_GZ']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            TSmooth // Smooths each voxel time series in a 3D+time dataset and produces
+                mandatory
+                     in_file // input file to 3dTSmooth
+                optional
+                     out_file // output file from 3dTSmooth
+                     datum // Sets the data type of the output dataset
+                     lin // 3 point linear filter: :math:`0.15\,a + 0.70\,b + 0.15\,c` [This is the default smoother]
+                     med // 3 point median filter: median(a,b,c)
+                     osf // 3 point order statistics filter::math:`0.15\,min(a,b,c) + 0.70\,median(a,b,c) + 0.15\,max(a,b,c)`
+                     lin3 // 3 point linear filter: :math:`0.5\,(1-m)\,a + m\,b + 0.5\,(1-m)\,c`. Here, 'm' is a number strictly between 0 and 1.
+                     hamming // Use N point Hamming windows. (N must be odd and bigger than 1.)
+                     blackman // Use N point Blackman windows. (N must be odd and bigger than 1.)
+                     custom // odd # of coefficients must be in a single column in ASCII file
+                     adaptive // use adaptive mean filtering of width N (where N must be odd and bigger than 3).
+                     num_threads // set number of threads
+                     outputtype // AFNI output filetype
+                        Alternative
+                            ['NIFTI', 'AFNI', 'NIFTI_GZ']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            Volreg // Register input volumes to a base volume using AFNI 3dvolreg command
+                mandatory
+                     in_file // input file to 3dvolreg
+                optional
+                     in_weight_volume
+                     out_file // output image file name
+                     basefile // base file for registration
+                     zpad // Zeropad around the edges by 'n' voxels during rotations
+                     md1d_file // max displacement output file
+                     oned_file // 1D movement parameters output file
+                     verbose // more detailed description of the process
+                     timeshift // time shift to mean slice time offset
+                     copyorigin // copy base file origin coords to output
+                     oned_matrix_save // Save the matrix transformation
+                     interp // spatial interpolation methods [default = heptic]
+                        Alternative
+                            ['Fourier', 'cubic', 'heptic', 'quintic', 'linear']
+                     num_threads // set number of threads
+                     outputtype // AFNI output filetype
+                        Alternative
+                            ['NIFTI', 'AFNI', 'NIFTI_GZ']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            Warp // Use 3dWarp for spatially transforming a dataset.
+                mandatory
+                     in_file // input file to 3dWarp
+                optional
+                     out_file // output image file name
+                     tta2mni // transform dataset from Talairach to MNI152
+                     mni2tta // transform dataset from MNI152 to Talaraich
+                     matparent // apply transformation from 3dWarpDrive
+                     oblique_parent // Read in the oblique transformation matrix from an oblique dataset and make cardinal dataset oblique to match
+                     deoblique // transform dataset from oblique to cardinal
+                     interp // spatial interpolation methods [default = linear]
+                        Alternative
+                            ['linear', 'cubic', 'NN', 'quintic']
+                     gridset // copy grid of specified dataset
+                     newgrid // specify grid of this size (mm)
+                     zpad // pad input dataset with N planes of zero on all sides.
+                     verbose // Print out some information along the way.
+                     save_warp // save warp as .mat file
+                     num_threads // set number of threads
+                     outputtype // AFNI output filetype
+                        Alternative
+                            ['NIFTI', 'AFNI', 'NIFTI_GZ']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+constraints

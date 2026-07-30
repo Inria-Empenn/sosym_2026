@@ -1,0 +1,435 @@
+features
+    "FSL_Preprocessing" {abstract}
+        optional
+            ApplyWarp // FSL's applywarp wrapper to apply the results of a FNIRT registration
+                mandatory
+                     in_file // image to be warped
+                     ref_file // reference image
+                optional
+                     out_file // output filename
+                     field_file // file containing warp field
+                     abswarp // treat warp field as absolute: x' = w(x)
+                     relwarp // treat warp field as relative: x' = x + w(x)
+                     datatype // Force output data type [char short int float double].
+                        Alternative
+                            ['char', 'short', 'int', 'float', 'double']
+                     supersample // intermediary supersampling of output, default is off
+                     superlevel
+                     premat // filename for pre-transform (affine matrix)
+                     postmat // filename for post-transform (affine matrix)
+                     mask_file // filename for mask image (in reference space)
+                     interp // interpolation method
+                        Alternative
+                            ['nn', 'trilinear', 'sinc', 'spline']
+                     output_type // FSL output type
+                        Alternative
+                            ['NIFTI', 'NIFTI_PAIR', 'NIFTI_GZ', 'NIFTI_PAIR_GZ', 'GIFTI']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            ApplyXFM // Currently just a light wrapper around FLIRT,
+                mandatory
+                     in_file // input file
+                     reference // reference file
+                optional
+                     apply_xfm // apply transformation supplied by in_matrix_file or uses_qform to use the affine matrix stored in the reference header
+                     out_file // registered output file
+                     out_matrix_file // output affine matrix in 4x4 asciii format
+                     out_log // output log
+                     in_matrix_file // input 4x4 affine matrix
+                     apply_isoxfm // as applyxfm but forces isotropic resampling
+                     datatype // force output data type
+                        Alternative
+                            ['char', 'short', 'int', 'float', 'double']
+                     cost // cost function
+                        Alternative
+                            ['mutualinfo', 'corratio', 'normcorr', 'normmi', 'leastsq', 'labeldiff', 'bbr']
+                     cost_func // cost function
+                        Alternative
+                            ['mutualinfo', 'corratio', 'normcorr', 'normmi', 'leastsq', 'labeldiff', 'bbr']
+                     uses_qform // initialize using sform or qform
+                     display_init // display initial matrix
+                     angle_rep // representation of rotation angles
+                        Alternative
+                            ['quaternion', 'euler']
+                     interp // final interpolation method used in reslicing
+                        Alternative
+                            ['trilinear', 'nearestneighbour', 'sinc', 'spline']
+                     sinc_width // full-width in voxels
+                     sinc_window // sinc window
+                        Alternative
+                            ['rectangular', 'hanning', 'blackman']
+                     bins // number of histogram bins
+                     dof // number of transform degrees of freedom
+                     no_resample // do not change input sampling
+                     force_scaling // force rescaling even for low-res images
+                     min_sampling // set minimum voxel dimension for sampling
+                     padding_size // for applyxfm: interpolates outside image by size
+                     searchr_x // search angles along x-axis, in degrees
+                     searchr_y // search angles along y-axis, in degrees
+                     searchr_z // search angles along z-axis, in degrees
+                     no_search // set all angular searches to ranges 0 to 0
+                     coarse_search // coarse search delta angle
+                     fine_search // fine search delta angle
+                     schedule // replaces default schedule
+                     ref_weight // File for reference weighting volume
+                     in_weight // File for input weighting volume
+                     no_clamp // do not use intensity clamping
+                     no_resample_blur // do not use blurring on downsampling
+                     rigid2D // use 2D rigid body mode - ignores dof
+                     save_log // save to log file
+                     verbose // verbose mode, 0 is least
+                     bgvalue // use specified background value for points outside FOV
+                     wm_seg // white matter segmentation volume needed by BBR cost function
+                     wmcoords // white matter boundary coordinates for BBR cost function
+                     wmnorms // white matter boundary normals for BBR cost function
+                     fieldmap // fieldmap image in rads/s - must be already registered to the reference image
+                     fieldmapmask // mask for fieldmap image
+                     pedir // phase encode direction of EPI - 1/2/3=x/y/z & -1/-2/-3=-x/-y/-z
+                     echospacing // value of EPI echo spacing - units of seconds
+                     bbrtype // type of bbr cost function: signed [default], global_abs, local_abs
+                        Alternative
+                            ['signed', 'global_abs', 'local_abs']
+                     bbrslope // value of bbr slope
+                     output_type // FSL output type
+                        Alternative
+                            ['NIFTI', 'NIFTI_PAIR', 'NIFTI_GZ', 'NIFTI_PAIR_GZ', 'GIFTI']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            BET // FSL BET wrapper for skull stripping
+                mandatory
+                     in_file // input file to skull strip
+                optional
+                     out_file // name of output skull stripped image
+                     outline // create surface outline image
+                     mask // create binary mask image
+                     skull // create skull image
+                     no_output // Don't generate segmented output
+                     frac // fractional intensity threshold
+                     vertical_gradient // vertical gradient in fractional intensity threshold (-1, 1)
+                     radius // head radius
+                     center // center of gravity in voxels
+                     threshold // apply thresholding to segmented brain image and mask
+                     mesh // generate a vtk mesh brain surface
+                     robust // robust brain centre estimation (iterates BET several times)
+                     padding // improve BET if FOV is very small in Z (by temporarily padding end slices)
+                     remove_eyes // eye & optic nerve cleanup (can be useful in SIENA)
+                     surfaces // run bet2 and then betsurf to get additional skull and scalp surfaces (includes registrations)
+                     t2_guided // as with creating surfaces, when also feeding in non-brain-extracted T2 (includes registrations)
+                     functional // apply to 4D fMRI data
+                     reduce_bias // bias field and neck cleanup
+                     output_type // FSL output type
+                        Alternative
+                            ['NIFTI', 'NIFTI_PAIR', 'NIFTI_GZ', 'NIFTI_PAIR_GZ', 'GIFTI']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            FAST // FSL FAST wrapper for segmentation and bias correction
+                mandatory
+                     in_files // image, or multi-channel set of images, to be segmented
+                optional
+                     out_basename // base name of output files
+                     number_classes // number of tissue-type classes
+                     output_biasfield // output estimated bias field
+                     output_biascorrected // output restored image (bias-corrected image)
+                     img_type // int specifying type of image: (1 = T1, 2 = T2, 3 = PD)
+                        Alternative
+                            [1, 2, 3]
+                     bias_iters // number of main-loop iterations during bias-field removal
+                     bias_lowpass // bias field smoothing extent (FWHM) in mm
+                     init_seg_smooth // initial segmentation spatial smoothness (during bias field estimation)
+                     segments // outputs a separate binary image for each tissue type
+                     init_transform // <standard2input.mat> initialise using priors
+                     other_priors // alternative prior images
+                     no_pve // turn off PVE (partial volume estimation)
+                     no_bias // do not remove bias field
+                     use_priors // use priors throughout
+                     segment_iters // number of segmentation-initialisation iterations
+                     mixel_smooth // spatial smoothness for mixeltype
+                     iters_afterbias // number of main-loop iterations after bias-field removal
+                     hyper // segmentation spatial smoothness
+                     verbose // switch on diagnostic messages
+                     manual_seg // Filename containing intensities
+                     probability_maps // outputs individual probability maps
+                     output_type // FSL output type
+                        Alternative
+                            ['NIFTI', 'NIFTI_PAIR', 'NIFTI_GZ', 'NIFTI_PAIR_GZ', 'GIFTI']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            FIRST // FSL run_first_all wrapper for segmentation of subcortical volumes
+                mandatory
+                     in_file // input data file
+                     out_file // output data file
+                optional
+                     verbose // Use verbose logging.
+                     brain_extracted // Input structural image is already brain-extracted
+                     no_cleanup // Input structural image is already brain-extracted
+                     method // Method must be one of auto, fast, none, or it can be entered using the 'method_as_numerical_threshold' input
+                        Alternative
+                            ['auto', 'fast', 'none']
+                     method_as_numerical_threshold // Specify a numerical threshold value or use the 'method' input to choose auto, fast, or none
+                     list_of_specific_structures // Runs only on the specified structures (e.g. L_Hipp, R_HippL_Accu, R_Accu, L_Amyg, R_AmygL_Caud, R_Caud, L_Pall, R_PallL_Puta, R_Puta, L_Thal, R_Thal, BrStem
+                     affine_file // Affine matrix to use (e.g. img2std.mat) (does not re-run registration)
+                     output_type // FSL output type
+                        Alternative
+                            ['NIFTI', 'NIFTI_PAIR', 'NIFTI_GZ', 'NIFTI_PAIR_GZ', 'GIFTI']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            FLIRT // FSL FLIRT wrapper for coregistration
+                mandatory
+                     in_file // input file
+                     reference // reference file
+                optional
+                     out_file // registered output file
+                     out_matrix_file // output affine matrix in 4x4 asciii format
+                     out_log // output log
+                     in_matrix_file // input 4x4 affine matrix
+                     apply_xfm // apply transformation supplied by in_matrix_file or uses_qform to use the affine matrix stored in the reference header
+                     apply_isoxfm // as applyxfm but forces isotropic resampling
+                     datatype // force output data type
+                        Alternative
+                            ['char', 'short', 'int', 'float', 'double']
+                     cost // cost function
+                        Alternative
+                            ['mutualinfo', 'corratio', 'normcorr', 'normmi', 'leastsq', 'labeldiff', 'bbr']
+                     cost_func // cost function
+                        Alternative
+                            ['mutualinfo', 'corratio', 'normcorr', 'normmi', 'leastsq', 'labeldiff', 'bbr']
+                     uses_qform // initialize using sform or qform
+                     display_init // display initial matrix
+                     angle_rep // representation of rotation angles
+                        Alternative
+                            ['quaternion', 'euler']
+                     interp // final interpolation method used in reslicing
+                        Alternative
+                            ['trilinear', 'nearestneighbour', 'sinc', 'spline']
+                     sinc_width // full-width in voxels
+                     sinc_window // sinc window
+                        Alternative
+                            ['rectangular', 'hanning', 'blackman']
+                     bins // number of histogram bins
+                     dof // number of transform degrees of freedom
+                     no_resample // do not change input sampling
+                     force_scaling // force rescaling even for low-res images
+                     min_sampling // set minimum voxel dimension for sampling
+                     padding_size // for applyxfm: interpolates outside image by size
+                     searchr_x // search angles along x-axis, in degrees
+                     searchr_y // search angles along y-axis, in degrees
+                     searchr_z // search angles along z-axis, in degrees
+                     no_search // set all angular searches to ranges 0 to 0
+                     coarse_search // coarse search delta angle
+                     fine_search // fine search delta angle
+                     schedule // replaces default schedule
+                     ref_weight // File for reference weighting volume
+                     in_weight // File for input weighting volume
+                     no_clamp // do not use intensity clamping
+                     no_resample_blur // do not use blurring on downsampling
+                     rigid2D // use 2D rigid body mode - ignores dof
+                     save_log // save to log file
+                     verbose // verbose mode, 0 is least
+                     bgvalue // use specified background value for points outside FOV
+                     wm_seg // white matter segmentation volume needed by BBR cost function
+                     wmcoords // white matter boundary coordinates for BBR cost function
+                     wmnorms // white matter boundary normals for BBR cost function
+                     fieldmap // fieldmap image in rads/s - must be already registered to the reference image
+                     fieldmapmask // mask for fieldmap image
+                     pedir // phase encode direction of EPI - 1/2/3=x/y/z & -1/-2/-3=-x/-y/-z
+                     echospacing // value of EPI echo spacing - units of seconds
+                     bbrtype // type of bbr cost function: signed [default], global_abs, local_abs
+                        Alternative
+                            ['signed', 'global_abs', 'local_abs']
+                     bbrslope // value of bbr slope
+                     output_type // FSL output type
+                        Alternative
+                            ['NIFTI', 'NIFTI_PAIR', 'NIFTI_GZ', 'NIFTI_PAIR_GZ', 'GIFTI']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            FNIRT // FSL FNIRT wrapper for non-linear registration
+                mandatory
+                     ref_file // name of reference image
+                     in_file // name of input image
+                optional
+                     affine_file // name of file containing affine transform
+                     inwarp_file // name of file containing initial non-linear warps
+                     in_intensitymap_file // name of file/files containing initial intensity mapping usually generated by previous fnirt run
+                     fieldcoeff_file
+                     warped_file // name of output image
+                     field_file
+                     jacobian_file
+                     modulatedref_file
+                     out_intensitymap_file
+                     log_file // Name of log-file
+                     config_file
+                     refmask_file // name of file with mask in reference space
+                     inmask_file // name of file with mask in input image space
+                     skip_refmask // Skip specified refmask if set, default false
+                     skip_inmask // skip specified inmask if set, default false
+                     apply_refmask // list of iterations to use reference mask on (1 to use, 0 to skip)
+                     apply_inmask // list of iterations to use input mask on (1 to use, 0 to skip)
+                     skip_implicit_ref_masking // skip implicit masking based on value in --ref image. Default = 0
+                     skip_implicit_in_masking // skip implicit masking based on value in --in image. Default = 0
+                     refmask_val // Value to mask out in --ref image. Default =0.0
+                     inmask_val // Value to mask out in --in image. Default =0.0
+                     max_nonlin_iter // Max # of non-linear iterations list, default [5, 5, 5, 5]
+                     subsampling_scheme // sub-sampling scheme, list, default [4, 2, 1, 1]
+                     warp_resolution // (approximate) resolution (in mm) of warp basis in x-, y- and z-direction, default 10, 10, 10
+                     spline_order // Order of spline, 2->Qadratic spline, 3->Cubic spline. Default=3
+                     in_fwhm // FWHM (in mm) of gaussian smoothing kernel for input volume, default [6, 4, 2, 2]
+                     ref_fwhm // FWHM (in mm) of gaussian smoothing kernel for ref volume, default [4, 2, 0, 0]
+                     regularization_model // Model for regularisation of warp-field [membrane_energy bending_energy], default bending_energy
+                        Alternative
+                            ['membrane_energy', 'bending_energy']
+                     regularization_lambda // Weight of regularisation, default depending on --ssqlambda and --regmod switches. See user documentation.
+                     skip_lambda_ssq // If true, lambda is not weighted by current ssq, default false
+                     jacobian_range // Allowed range of Jacobian determinants, default 0.01, 100.0
+                     derive_from_ref // If true, ref image is used to calculate derivatives. Default false
+                     intensity_mapping_model // Model for intensity-mapping
+                        Alternative
+                            ['none', 'global_linear', 'global_non_linear', 'local_linear', 'global_non_linear_with_bias', 'local_non_linear']
+                     intensity_mapping_order // Order of poynomial for mapping intensities, default 5
+                     biasfield_resolution // Resolution (in mm) of bias-field modelling local intensities, default 50, 50, 50
+                     bias_regularization_lambda // Weight of regularisation for bias-field, default 10000
+                     skip_intensity_mapping // Skip estimate intensity-mapping default false
+                     apply_intensity_mapping // List of subsampling levels to apply intensity mapping for (0 to skip, 1 to apply)
+                     hessian_precision // Precision for representing Hessian, double or float. Default double
+                        Alternative
+                            ['double', 'float']
+                     output_type // FSL output type
+                        Alternative
+                            ['NIFTI', 'NIFTI_PAIR', 'NIFTI_GZ', 'NIFTI_PAIR_GZ', 'GIFTI']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            FUGUE // FSL FUGUE set of tools for EPI distortion correction
+                optional
+                     in_file // filename of input volume
+                     shift_in_file // filename for reading pixel shift volume
+                     phasemap_in_file // filename for input phase image
+                     fmap_in_file // filename for loading fieldmap (rad/s)
+                     unwarped_file // apply unwarping and save as filename
+                     warped_file // apply forward warping and save as filename
+                     forward_warping // apply forward warping instead of unwarping
+                     dwell_to_asym_ratio // set the dwell to asym time ratio
+                     dwell_time // set the EPI dwell time per phase-encode line - same as echo spacing - (sec)
+                     asym_se_time // set the fieldmap asymmetric spin echo time (sec)
+                     median_2dfilter // apply 2D median filtering
+                     despike_2dfilter // apply a 2D de-spiking filter
+                     no_gap_fill // do not apply gap-filling measure to the fieldmap
+                     no_extend // do not apply rigid-body extrapolation to the fieldmap
+                     smooth2d // apply 2D Gaussian smoothing of sigma N (in mm)
+                     smooth3d // apply 3D Gaussian smoothing of sigma N (in mm)
+                     poly_order // apply polynomial fitting of order N
+                     fourier_order // apply Fourier (sinusoidal) fitting of order N
+                     pava // apply monotonic enforcement via PAVA
+                     despike_threshold // specify the threshold for de-spiking (default=3.0)
+                     unwarp_direction // specifies direction of warping (default y)
+                        Alternative
+                            ['x', 'y', 'z', 'x-', 'y-', 'z-']
+                     phase_conjugate // apply phase conjugate method of unwarping
+                     icorr // apply intensity correction to unwarping (pixel shift method only)
+                     icorr_only // apply intensity correction only
+                     mask_file // filename for loading valid mask
+                     nokspace // do not use k-space forward warping
+                     save_shift // write pixel shift volume
+                     shift_out_file // filename for saving pixel shift volume
+                     save_unmasked_shift // saves the unmasked shiftmap when using --saveshift
+                     save_fmap // write field map volume
+                     fmap_out_file // filename for saving fieldmap (rad/s)
+                     save_unmasked_fmap // saves the unmasked fieldmap when using --savefmap
+                     output_type // FSL output type
+                        Alternative
+                            ['NIFTI', 'NIFTI_PAIR', 'NIFTI_GZ', 'NIFTI_PAIR_GZ', 'GIFTI']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            MCFLIRT // FSL MCFLIRT wrapper for within-modality motion correction
+                mandatory
+                     in_file // timeseries to motion-correct
+                optional
+                     out_file // file to write
+                     cost // cost function to optimize
+                        Alternative
+                            ['mutualinfo', 'woods', 'corratio', 'normcorr', 'normmi', 'leastsquares']
+                     bins // number of histogram bins
+                     dof // degrees of freedom for the transformation
+                     ref_vol // volume to align frames to
+                     scaling // scaling factor to use
+                     smooth // smoothing factor for the cost function
+                     rotation // scaling factor for rotation tolerances
+                     stages // stages (if 4, perform final search with sinc interpolation
+                     init // initial transformation matrix
+                     interpolation // interpolation method for transformation
+                        Alternative
+                            ['spline', 'nn', 'sinc']
+                     use_gradient // run search on gradient images
+                     use_contour // run search on contour images
+                     mean_vol // register to mean volume
+                     stats_imgs // produce variance and std. dev. images
+                     save_mats // save transformation matrices
+                     save_plots // save transformation parameters
+                     save_rms // save rms displacement parameters
+                     ref_file // target image for motion correction
+                     output_type // FSL output type
+                        Alternative
+                            ['NIFTI', 'NIFTI_PAIR', 'NIFTI_GZ', 'NIFTI_PAIR_GZ', 'GIFTI']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            PRELUDE // FSL prelude wrapper for phase unwrapping
+                mandatory
+                     complex_phase_file // complex phase input volume
+                     magnitude_file // file containing magnitude image
+                     phase_file // raw phase file
+                optional
+                     unwrapped_phase_file // file containing unwrapepd phase
+                     num_partitions // number of phase partitions to use
+                     labelprocess2d // does label processing in 2D (slice at a time)
+                     process2d // does all processing in 2D (slice at a time)
+                     process3d // forces all processing to be full 3D
+                     threshold // intensity threshold for masking
+                     mask_file // filename of mask input volume
+                     start // first image number to process (default 0)
+                     end // final image number to process (default Inf)
+                     savemask_file // saving the mask volume
+                     rawphase_file // saving the raw phase output
+                     label_file // saving the area labels output
+                     removeramps // remove phase ramps during unwrapping
+                     output_type // FSL output type
+                        Alternative
+                            ['NIFTI', 'NIFTI_PAIR', 'NIFTI_GZ', 'NIFTI_PAIR_GZ', 'GIFTI']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            SUSAN // FSL SUSAN wrapper to perform smoothing
+                mandatory
+                     in_file // filename of input timeseries
+                     brightness_threshold // brightness threshold and should be greater than noise level and less than contrast of edges to be preserved.
+                     fwhm // fwhm of smoothing, in mm, gets converted using sqrt(8*log(2))
+                optional
+                     dimension // within-plane (2) or fully 3D (3)
+                        Alternative
+                            [3, 2]
+                     use_median // whether to use a local median filter in the cases where single-point noise is detected
+                        Alternative
+                            [1, 0]
+                     usans // determines whether the smoothing area (USAN) is to be found from secondary images (0, 1 or 2). A negative value for any brightness threshold will auto-set the threshold at 10% of the robust range
+                     out_file // output file name
+                     output_type // FSL output type
+                        Alternative
+                            ['NIFTI', 'NIFTI_PAIR', 'NIFTI_GZ', 'NIFTI_PAIR_GZ', 'GIFTI']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+            SliceTimer // FSL slicetimer wrapper to perform slice timing correction
+                mandatory
+                     in_file // filename of input timeseries
+                optional
+                     out_file // filename of output timeseries
+                     index_dir // slice indexing from top to bottom
+                     time_repetition // Specify TR of data - default is 3s
+                     slice_direction // direction of slice acquisition (x=1, y=2, z=3) - default is z
+                        Alternative
+                            [1, 2, 3]
+                     interleaved // use interleaved acquisition
+                     custom_timings // slice timings, in fractions of TR, range 0:1 (default is 0.5 = no shift)
+                     global_shift // shift in fraction of TR, range 0:1 (default is 0.5 = no shift)
+                     custom_order // filename of single-column custom interleave order file (first slice is referred to as 1 not 0)
+                     output_type // FSL output type
+                        Alternative
+                            ['NIFTI', 'NIFTI_PAIR', 'NIFTI_GZ', 'NIFTI_PAIR_GZ', 'GIFTI']
+                     args // Additional parameters to the command
+                     environ // Environment variables
+constraints

@@ -16,8 +16,10 @@ See [CITATION](CITATION).
 # Contents overview
 
 For `data`, `doc`, `figures`, `results`, `src` :
-- `case_study_1` contains the data, results and code related to case study 1
+- `case_study_1` contains the data, results and code related to case study 1 (initial submission)
+- `case_study_1_revised` contains the data, results and code related to case study 1 (revised submission following review)
 - `case_study_2` contains the data, results and code related to case study 2
+- `case_study_2_revised` contains the data, results and code related to case study 2 (revised submission following review)
 
 ## src
 Notebooks used for data post-processing analysis are stored in each directory
@@ -29,9 +31,11 @@ Notebooks used for data post-processing analysis are stored in each directory
 
 ## data
 
-Task-fMRI dataset is available in data/auditory. It was downloaded from https://www.fil.ion.ucl.ac.uk/spm/data/auditory/
+- Case study 1 : Task-fMRI dataset (auditory) is available at https://www.fil.ion.ucl.ac.uk/spm/data/auditory/
+- Case study 2 : Task-fMRI dataset (motor) is available at https://www.humanconnectome.org/study/hcp-young-adult (registration needed)
+  - Check `data/case_study_2_revised/data_desc.json` for subject id
 
-For the `data` directory in each `case_study_[1,2]` directory :
+For the `data` directory in each `case_study_[1,2](_revised)` directory :
 - `model/full_pipeline.uvl` is the UVL model used for sampling
 - `configs` contains the sampled configs
   - produced by sampling command (see _Sample_ section below)
@@ -109,10 +113,12 @@ Execute (run all cells) `src/classifier_analysis.ipynb` notebook, then see `Feat
 
 ### fMRI data
 
-fMRI data used in this experiment can be downloaded at https://www.fil.ion.ucl.ac.uk/spm/data/auditory/
+- Case study 1 : Task-fMRI dataset (auditory) is available at https://www.fil.ion.ucl.ac.uk/spm/data/auditory/
 ```
 Raw functional and structural data (BIDS & NIfTI formats): ZIP archive: MoAEpilot.bids.zip (29Mb)
 ``` 
+- Case study 2 : Task-fMRI dataset (motor) is available at https://www.humanconnectome.org/study/hcp-young-adult (registration needed)
+  - Check `data/case_study_2_revised/data_desc.json` for subject id
 
 ### Sampling configuration
 

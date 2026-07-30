@@ -1,0 +1,35 @@
+graph TD
+    %% Declare nodes
+    A("`**Signal modeling**<br>Motion regressors<br>[100.0%]`")
+    B("`**Coregistration**<br>Cost function<br>[74.7%]`")
+    C("`**Signal modeling**<br>Serial correlation model<br>[64.3%]`")
+
+    %% Cluster nodes
+    C1{{"Cluster 1<br>Corr. to ref. : 0.644<br>[30.3%]"}}
+    C2{{"Cluster 2<br>Corr. to ref. : 0.750<br>[34.0%]"}}
+    C3{{"Cluster 3<br>Corr. to ref. : 0.409<br>[25.3%]"}}
+    C4{{"Cluster 4<br>Corr. to ref. : 0.425<br>[10.4%]"}}
+
+    C1i@{ img: "https://raw.githubusercontent.com/Inria-Empenn/sosym_2026/refs/heads/master/figures/case_study_2_revised/medoid_valid_cluster_1.png", label: "", pos: "t", w: 250, constraint: "on" }
+    C2i@{ img: "https://raw.githubusercontent.com/Inria-Empenn/sosym_2026/refs/heads/master/figures/case_study_2_revised/medoid_valid_cluster_2.png", label: "", pos: "t", w: 250, constraint: "on" }
+    C3i@{ img: "https://raw.githubusercontent.com/Inria-Empenn/sosym_2026/refs/heads/master/figures/case_study_2_revised/medoid_valid_cluster_3.png", label: "", pos: "t", w: 250, constraint: "on" }
+    C4i@{ img: "https://raw.githubusercontent.com/Inria-Empenn/sosym_2026/refs/heads/master/figures/case_study_2_revised/medoid_valid_cluster_4.png", label: "", pos: "t", w: 250, constraint: "on" }
+
+
+    %% Link nodes
+    A --> |"0"| C3
+    A --> |"6 OR 18 OR 24"| B
+    B --> |"Normalised Cross Correlation"| C4
+    B --> |"Mutual information OR <br>Normalised Mutual Information OR <br>Entropy correlation coefficient"| C
+
+    C --> |"FAST"| C2
+    C --> |"AR(1)"| C1
+
+    C1 -.- C1i
+    C2 -.- C2i
+    C3 -.- C3i
+    C4 -.- C4i
+
+    style A fill:#f5fef4
+    style B fill:#ea985e
+    style C fill:#61e955
